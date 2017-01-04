@@ -5,6 +5,8 @@ create table account (
 );
 alter table account add constraint pk_account primary key (account_id);
 
+create sequence seq_account;
+
 create table holding (
 	holding_id number(19,0) not null,
 	account_number varchar2(255),
@@ -27,5 +29,7 @@ create table holding (
 
 alter table holding add constraint pk_holding primary key (holding_id);
 
-INSERT INTO TABLE_NAME (column1, column2, column3,...columnN)]
-VALUES (value1, value2, value3,...valueN);
+create sequence seq_holding;
+
+--INSERT INTO TABLE_NAME (column1, column2, column3,...columnN)]
+--VALUES (value1, value2, value3,...valueN);

@@ -19,7 +19,7 @@ public class DashBoardRestController {
 	
 	
 	@GetMapping(path="accounts", produces=MediaType.APPLICATION_JSON_VALUE)
-	public List<String> foo() {
+	public List<String> getAccounts() {
 		return accountService.getUserAccounts();
 	}
 

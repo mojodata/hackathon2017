@@ -1,88 +1,213 @@
 package com.rbc.rbcone.position.dashboard.model;
 
-import org.springframework.data.annotation.Id;
-import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 
 /**
  * Created by wayneyu on 1/4/17.
  */
 @Entity
-public class Holding {
+public class Holding implements Serializable {
 
-    @Id
-    @Column(name="holding_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+	private static final long serialVersionUID = 1L;
 
-    @Column(name="account_number", nullable=false)
-    @ManyToOne
-    public final String accountNumber;
+	@Id
+	@Column(name = "holding_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="holding_seq_gen")
+	@SequenceGenerator(name="holding_seq_gen", sequenceName="seq_holding")
+	private Long id;
 
-    @Column(name="portfolio_currency", nullable=false)
-    public final String portfolioCurrency;
+	@Column(name = "account_number", nullable = false)
+	private String accountNumber;
 
-    @Column(name="report_date")
-    public final Date reportDate;
+	@Column(name = "portfolio_currency", nullable = false)
+	private String portfolioCurrency;
 
-    @Column(name="country_of_issuer")
-    public final String countryOfIssuer;
+	@Column(name = "report_date")
+	private Date reportDate;
 
-    @Column(name="major_security_type")
-    public final String majorSecurityType;
+	@Column(name = "country_of_issuer")
+	private String countryOfIssuer;
 
-    @Column(name="minor_security_type")
-    public final String minorSecurityType;
+	@Column(name = "major_security_type")
+	private String majorSecurityType;
 
-    @Column(name="industry")
-    public final String industry;
+	@Column(name = "minor_security_type")
+	private String minorSecurityType;
 
-    @Column(name="security_identifier")
-    public final String securityId;
+	@Column(name = "industry")
+	private String industry;
 
-    @Column(name="cusip_seqcurity_number")
-    public final String cusip;
+	@Column(name = "security_identifier")
+	private String securityId;
 
-    @Column(name="security_number_isin")
-    public final String isin;
+	@Column(name = "cusip_seqcurity_number")
+	private String cusip;
 
-    @Column(name="sedol_security_number")
-    public final String sedol;
+	@Column(name = "security_number_isin")
+	private String isin;
 
-    @Column(name="long_security_description")
-    public final String securityDescription;
+	@Column(name = "sedol_security_number")
+	private String sedol;
 
-    @Column(name="units")
-    public final double units;
+	@Column(name = "long_security_description")
+	private String securityDescription;
 
-    @Column(name="price")
-    public final double price;
+	@Column(name = "units")
+	private double units;
 
-    @Column(name="book_base_value")
-    public final double bookBaseValue;
+	@Column(name = "price")
+	private double price;
 
-    @Column(name="market_base_value")
-    public final double marketBaseValue;
+	@Column(name = "book_base_value")
+	private double bookBaseValue;
 
-    public Holding(String accountNumber, String portfolioCurrency, Date reportDate, String countryOfIssuer,
-                   String majorSecurityType, String minorSecurityType, String industry, String securityId, String cusip,
-                   String isin, String sedol, String securityDescription, double units, double bookBaseValue,
-                   double marketBaseValue, double price) {
-        this.accountNumber = accountNumber;
-        this.portfolioCurrency = portfolioCurrency;
-        this.reportDate = reportDate;
-        this.countryOfIssuer = countryOfIssuer;
-        this.majorSecurityType = majorSecurityType;
-        this.minorSecurityType = minorSecurityType;
-        this.industry = industry;
-        this.securityId = securityId;
-        this.cusip = cusip;
-        this.isin = isin;
-        this.sedol = sedol;
-        this.securityDescription = securityDescription;
-        this.units = units;
-        this.price = price;
-        this.bookBaseValue = bookBaseValue;
-        this.marketBaseValue = marketBaseValue;
-    }
+	@Column(name = "market_base_value")
+	private double marketBaseValue;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public String getPortfolioCurrency() {
+		return portfolioCurrency;
+	}
+
+	public void setPortfolioCurrency(String portfolioCurrency) {
+		this.portfolioCurrency = portfolioCurrency;
+	}
+
+	public Date getReportDate() {
+		return reportDate;
+	}
+
+	public void setReportDate(Date reportDate) {
+		this.reportDate = reportDate;
+	}
+
+	public String getCountryOfIssuer() {
+		return countryOfIssuer;
+	}
+
+	public void setCountryOfIssuer(String countryOfIssuer) {
+		this.countryOfIssuer = countryOfIssuer;
+	}
+
+	public String getMajorSecurityType() {
+		return majorSecurityType;
+	}
+
+	public void setMajorSecurityType(String majorSecurityType) {
+		this.majorSecurityType = majorSecurityType;
+	}
+
+	public String getMinorSecurityType() {
+		return minorSecurityType;
+	}
+
+	public void setMinorSecurityType(String minorSecurityType) {
+		this.minorSecurityType = minorSecurityType;
+	}
+
+	public String getIndustry() {
+		return industry;
+	}
+
+	public void setIndustry(String industry) {
+		this.industry = industry;
+	}
+
+	public String getSecurityId() {
+		return securityId;
+	}
+
+	public void setSecurityId(String securityId) {
+		this.securityId = securityId;
+	}
+
+	public String getCusip() {
+		return cusip;
+	}
+
+	public void setCusip(String cusip) {
+		this.cusip = cusip;
+	}
+
+	public String getIsin() {
+		return isin;
+	}
+
+	public void setIsin(String isin) {
+		this.isin = isin;
+	}
+
+	public String getSedol() {
+		return sedol;
+	}
+
+	public void setSedol(String sedol) {
+		this.sedol = sedol;
+	}
+
+	public String getSecurityDescription() {
+		return securityDescription;
+	}
+
+	public void setSecurityDescription(String securityDescription) {
+		this.securityDescription = securityDescription;
+	}
+
+	public double getUnits() {
+		return units;
+	}
+
+	public void setUnits(double units) {
+		this.units = units;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+	public double getBookBaseValue() {
+		return bookBaseValue;
+	}
+
+	public void setBookBaseValue(double bookBaseValue) {
+		this.bookBaseValue = bookBaseValue;
+	}
+
+	public double getMarketBaseValue() {
+		return marketBaseValue;
+	}
+
+	public void setMarketBaseValue(double marketBaseValue) {
+		this.marketBaseValue = marketBaseValue;
+	}
+	
+	
+
 }
