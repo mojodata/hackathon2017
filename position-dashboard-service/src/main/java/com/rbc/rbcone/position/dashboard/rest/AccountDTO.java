@@ -1,4 +1,4 @@
-package com.rbc.rbcone.position.dashboard.model;
+package com.rbc.rbcone.position.dashboard.rest;
 
 import java.io.Serializable;
 
@@ -9,31 +9,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 
-/**
- * Created by wayneyu on 1/4/17.
- */
-@Entity
-public class Account implements Serializable {
+public class AccountDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	@Id
-	@Column(name = "account_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="account_seq_gen")
-	@SequenceGenerator(name="account_seq_gen", sequenceName="seq_account")
-	private Long id;
-
-    @Column(name="account_number", nullable=false)
     private String accountNumber;
-
-    @Column(name="account_name")
     private String accountName;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
+	public AccountDTO(String accountNumber, String accountName) {
+		super();
+		this.accountNumber = accountNumber;
+		this.accountName = accountName;
 	}
 
 	public String getAccountNumber() {
