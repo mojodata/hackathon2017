@@ -23,4 +23,9 @@ public class DashBoardRestController {
 		return accountService.getUserAccounts();
 	}
 
+	@GetMapping(path="{accountNumber}/holdings", produces=MediaType.APPLICATION_JSON_VALUE)
+	public List<String> getHoldings() {
+		return accountService.getUserAccounts();
+	}
+
 }
