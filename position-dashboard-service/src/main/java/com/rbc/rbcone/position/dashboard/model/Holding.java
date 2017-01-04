@@ -1,6 +1,7 @@
 package com.rbc.rbcone.position.dashboard.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -61,16 +62,16 @@ public class Holding implements Serializable {
 	private String securityDescription;
 
 	@Column(name = "units")
-	private double units;
+	private BigDecimal units;
 
 	@Column(name = "price")
-	private double price;
+	private BigDecimal price;
 
 	@Column(name = "book_base_value")
-	private double bookBaseValue;
+	private BigDecimal bookBaseValue;
 
 	@Column(name = "market_base_value")
-	private double marketBaseValue;
+	private BigDecimal marketBaseValue;
 
 	public Long getId() {
 		return id;
@@ -176,35 +177,35 @@ public class Holding implements Serializable {
 		this.securityDescription = securityDescription;
 	}
 
-	public double getUnits() {
+	public BigDecimal getUnits() {
 		return units;
 	}
 
-	public void setUnits(double units) {
+	public void setUnits(BigDecimal units) {
 		this.units = units;
 	}
 
-	public double getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 
-	public double getBookBaseValue() {
+	public BigDecimal getBookBaseValue() {
 		return bookBaseValue;
 	}
 
-	public void setBookBaseValue(double bookBaseValue) {
+	public void setBookBaseValue(BigDecimal bookBaseValue) {
 		this.bookBaseValue = bookBaseValue;
 	}
 
-	public double getMarketBaseValue() {
+	public BigDecimal getMarketBaseValue() {
 		return marketBaseValue;
 	}
 
-	public void setMarketBaseValue(double marketBaseValue) {
+	public void setMarketBaseValue(BigDecimal marketBaseValue) {
 		this.marketBaseValue = marketBaseValue;
 	}
 	
