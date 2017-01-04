@@ -1,4 +1,4 @@
-package com.ebc.rbcone.position.dashboard.repo;
+package com.rbc.rbcone.position.dashboard.repo;
 
 import java.util.List;
 
