@@ -8,7 +8,10 @@ import org.springframework.stereotype.Repository;
 import com.rbc.rbcone.position.dashboard.model.Holding;
 
 @Repository
-public interface HoldingRepository extends JpaRepository<String, Long> {
+public interface HoldingRepository extends JpaRepository<Holding, Long> {
+	
     List<Holding> getHoldingsByAccountNumber(String accountNumber);
-    List<Holding> getHoldingsByAccountNumberAndCountry(String accountNumber, String country);
+    
+    List<Holding> getHoldingsByAccountNumberAndCountryOfIssuer(String accountNumber, String countryOfIssuer);
+    
 }
