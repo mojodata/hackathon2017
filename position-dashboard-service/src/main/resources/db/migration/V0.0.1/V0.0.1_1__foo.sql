@@ -1,0 +1,1 @@
+create table foo (bar varchar(10) primary key);
