@@ -24,7 +24,7 @@ public class DashBoardRestController {
 		return accountService.getUserAccounts();
 	}
 
-	@GetMapping(path="{accountNumber}/holdings", produces=MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path="accounts/{accountNumber}/holdings", produces=MediaType.APPLICATION_JSON_VALUE)
 	public AccountHoldingDTO getHoldings(@RequestParam(name="accountNumber", defaultValue="ALL", required=true) String accountNumber) {
 		return accountService.getHoldings(accountNumber);
 	}
