@@ -27,5 +27,9 @@ create table holding (
 
 alter table holding add constraint pk_holding primary key (holding_id);
 
-INSERT INTO TABLE_NAME (column1, column2, column3,...columnN)]
-VALUES (value1, value2, value3,...valueN);
+INSERT INTO account (account_number, account_name)
+VALUES (123456789, Account 1),
+(234567899, Account 2),
+(345678999, Account 3),
+(456789999, Account 4);
+

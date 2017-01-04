@@ -5,11 +5,10 @@ package com.rbc.rbcone.position.dashboard.model;
  */
 public class Security {
 
-    public final String description;
+    public String description;
 
-    public final double value;
+    public double value;
 
-    public final String currency;
+    public String currency;
 
-    public final String
 }
