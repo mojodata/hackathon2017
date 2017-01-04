@@ -15,12 +15,12 @@ import com.rbc.rbcone.position.dashboard.repo.AccountRepository;
 import com.rbc.rbcone.position.dashboard.repo.HoldingRepository;
 import com.rbc.rbcone.position.dashboard.rest.AccountDTO;
 import com.rbc.rbcone.position.dashboard.rest.AccountHoldingDTO;
+import com.rbc.rbcone.position.dashboard.rest.HoldingDTO;
 
 @Service
 public class AccountServiceImpl implements AccountService {
 
 	private static final String ZERO = "0.0";
-
 	private static final String ALL_ACCOUNTS = "ALL";
 
 	@Autowired
@@ -55,6 +55,37 @@ public class AccountServiceImpl implements AccountService {
 		
 		dto.setTotalMarketValue(calculateTotalMarketValue(holdings));
 		dto.setCountryTotalMarketValue(calculateTotalMarketValueByCountry(holdings));
+		dto.setHoldings(toDTOs(holdings));
+		
+		return dto;
+	}
+
+	private List<HoldingDTO> toDTOs(List<Holding> holdings) {
+		List<HoldingDTO> holdingDTOs = new ArrayList<>();
+		for (Holding holding : holdings) {
+			holdingDTOs.add(toDTO(holding));
+		}
+		
+		return holdingDTOs;
+	}
+
+	private HoldingDTO toDTO(Holding holding) {
+		HoldingDTO dto = new HoldingDTO();
+
+		dto.setAccountNumber(holding.getAccountNumber());
+		dto.setBookBaseValue(holding.getBookBaseValue());
+		dto.setCountryOfIssuer(holding.getCountryOfIssuer());
+		dto.setCusip(holding.getCusip());
+		dto.setIndustry(holding.getIndustry());
+		dto.setIsin(holding.getIsin());
+		dto.setMajorSecurityType(holding.getMajorSecurityType());
+		dto.setMarketBaseValue(holding.getMarketBaseValue());
+		dto.setMinorSecurityType(holding.getMinorSecurityType());
+		dto.setPortfolioCurrency(holding.getPortfolioCurrency());
+		dto.setPrice(holding.getPrice());
+		dto.setSecurityDescription(holding.getSecurityDescription());
+		dto.setSedol(holding.getSedol());
+		dto.setUnits(holding.getUnits());
 		
 		return dto;
 	}
