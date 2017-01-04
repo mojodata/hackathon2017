@@ -2,8 +2,12 @@ package com.rbc.rbcone.position.dashboard.service;
 
 import java.util.List;
 
-public interface AccountService {
+import com.rbc.rbcone.position.dashboard.rest.AccountDTO;
+import com.rbc.rbcone.position.dashboard.rest.AccountHoldingDTO;
 
-	List<String> getUserAccounts();
+public interface AccountService {
+	List<AccountDTO> getUserAccounts();
+
+	AccountHoldingDTO getHoldings(String accountNumber);
 
 }
