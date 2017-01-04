@@ -29,11 +29,4 @@ create table holding (
 
 alter table holding add constraint pk_holding primary key (holding_id);
 
-INSERT INTO account (account_id, account_number, account_name)
-VALUES (seq_account.nextVal, 123456789, Account 1),
-(seq_account.nextVal, 234567899, Account 2),
-(seq_account.nextVal, 345678999, Account 3),
-(seq_account.nextVal, 456789999, Account 4);
-
-
 create sequence seq_holding;
