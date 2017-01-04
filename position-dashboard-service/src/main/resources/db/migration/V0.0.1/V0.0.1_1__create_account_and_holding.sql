@@ -13,6 +13,7 @@ create table holding (
 	country_of_issuer varchar2(100),
 	major_security_type varchar2(100),
 	minor_security_type varchar2(100),
+	industry varchar2(100),
 	security_identifier varchar2(100),
 	cusip_seqcurity_number varchar2(20),
 	security_number_isin varchar2(20),
@@ -26,5 +27,5 @@ create table holding (
 
 alter table holding add constraint pk_holding primary key (holding_id);
 
-
-
+INSERT INTO TABLE_NAME (column1, column2, column3,...columnN)]
+VALUES (value1, value2, value3,...valueN);
