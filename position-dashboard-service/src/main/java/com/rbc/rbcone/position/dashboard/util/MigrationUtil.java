@@ -5,9 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.text.*;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -23,16 +21,16 @@ public class MigrationUtil {
 
     private static final String COUNTRY_CODE_FILE = "src/main/resources/data/country_code.csv";
     private static final String INSERT_ACC_PREFIX = "INSERT INTO account (account_id, account_number, account_name)\n";
-    private static final String INSERT_HOLDING_PREFIX = "INSERT INTO holding (holding_id, account_number, portfolio_currency, report_date, country_of_issuer, major_security_type, minor_security_type, security_identifier, cusip_seqcurity_number, security_number_isin, sedol_security_number, long_security_description, units, book_base_value, market_base_value)\n";
+    private static final String INSERT_HOLDING_PREFIX = "INSERT INTO holding (holding_id, account_number, portfolio_currency, report_date, country_of_issuer, major_security_type, minor_security_type, security_identifier, cusip_seqcurity_number, security_number_isin, sedol_security_number, long_security_description, units, book_base_value, price, market_base_value)\n";
     private static final String ACC_VALUES_FORMAT = INSERT_ACC_PREFIX + "VALUES (seq_account.nextVal, '%s', '%s');";
     private static final String HOLDING_VALUES_FORMAT = INSERT_HOLDING_PREFIX + "VALUES (seq_holding.nextVal, '%s', '%s', " +
-            "TO_DATE('%s', 'yyyy/mm/dd hh24:mi:ss'), '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %f, %f, %f);";
+            "TO_DATE('%s', 'yyyy/mm/dd hh24:mi:ss'), '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %f, %f, %f, %f);";
     private static final Map<String, String> countryCodeMap = createCountryCodeMap(COUNTRY_CODE_FILE);
 
     public static String createSqlInsertForAccount(String holdingsFilename) {
         return readFile(holdingsFilename)
                 .map(l -> l.split("\\|"))
-                .map(arr -> Arrays.asList(Arrays.copyOfRange(arr, 0, 2)))
+                .map(arr -> Arrays.asList(Arrays.copyOfRange(arr, 1, 3)))
                 .distinct()
                 .map(list -> String.format(ACC_VALUES_FORMAT, list.get(0), list.get(1)))
                 .collect(Collectors.joining("\n"));
@@ -41,11 +39,20 @@ public class MigrationUtil {
     public static String createSqlInsertForHolding(String holdingsFilename) {
         return readFile(holdingsFilename)
                 .map(l -> l.split("\\|"))
-                .map(arr -> new Object[]{arr[0], arr[2], arr[3], toISOCountryCode(arr[5]), arr[6], arr[7],
-                        arr[8], arr[9], arr[10], arr[11], arr[14], toDouble(arr[15]),
-                        toDouble(arr[16]), toDouble(arr[17])})
+                .map(arr -> new Object[]{arr[1], arr[3], arr[0], toISOCountryCode(arr[7]), arr[9], arr[8],
+                        arr[10], arr[4], arr[6], arr[5], arr[11].replaceAll("'", "''" ), toDouble(arr[12]), toDouble(arr[13]),
+                        toDouble(arr[14]), toDouble(arr[15])})
                 .map(arr -> String.format(HOLDING_VALUES_FORMAT, arr))
                 .collect(Collectors.joining("\n"));
+    }
+
+    private static void writeToFile(String filename, String content) {
+        Path path = FileSystems.getDefault().getPath(filename);
+        try {
+            Files.write(path, content.getBytes(), StandardOpenOption.WRITE);
+        } catch (Exception ex) {
+            logger.error("Cannot write to file: " + filename);
+        }
     }
 
     private static double toDouble(String doubleStr) {
@@ -83,12 +90,13 @@ public class MigrationUtil {
 
     public static void main(String[] args) {
 
-        String holdingsfilename = "src/main/resources/data/sampleholdingsdata_csv.csv";
+//        String holdingsfilename = "src/main/resources/data/sampleholdingsdata_csv.csv";
+        String holdingsfilename = "src/main/resources/data/global_sample2.csv";
+        String accountsMigrationScript = "src/main/resources/db/migration/V0.0.1/V0.0.1_2__populate_account.sql";
+        String holdingsMigrationScript = "src/main/resources/db/migration/V0.0.1/V0.0.1_3__populate_holding.sql";
 
-        System.out.println(createSqlInsertForHolding(holdingsfilename));
-
-//        System.out.println(countryCodeMap.get("United States"));
-//        System.out.println(countryCodeMap);
-
+//        writeToFile(accountsMigrationScript, createSqlInsertForAccount(holdingsfilename));
+        writeToFile(holdingsMigrationScript, createSqlInsertForHolding(holdingsfilename));
+//        System.out.println("'A".replaceAll("'", "\\\\'" ));
     }
 }
