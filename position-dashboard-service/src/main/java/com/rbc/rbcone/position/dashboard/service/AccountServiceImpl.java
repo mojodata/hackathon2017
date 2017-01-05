@@ -110,11 +110,12 @@ public class AccountServiceImpl implements AccountService {
 		for (Holding holding : holdings) {
 			String countryOfIssuer = holding.getCountryOfIssuer();
 			BigDecimal marketBaseValue = getHoldingValue(holding.getMarketBaseValue());
-			
-			if (map.containsKey(countryOfIssuer)) {
-				map.put(countryOfIssuer, map.get(countryOfIssuer).add(marketBaseValue));
-			} else {
-				map.put(countryOfIssuer, marketBaseValue);
+			if (countryOfIssuer != null) {
+				if (map.containsKey(countryOfIssuer)) {
+					map.put(countryOfIssuer, map.get(countryOfIssuer).add(marketBaseValue));
+				} else {
+					map.put(countryOfIssuer, marketBaseValue);
+				}
 			}
 		}
 		
