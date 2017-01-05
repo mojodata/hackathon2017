@@ -1,9 +1,11 @@
 package com.rbc.rbcone.position.dashboard.service;
 
 import java.math.BigDecimal;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,7 +67,7 @@ public class AccountServiceImpl implements AccountService {
         dto.setTotalMarketValue(calculateTotalMarketValue(holdings));
         dto.setCountryTotalMarketValue(calculateTotalMarketValueByCountry(holdings));
         dto.setMajorSecurityTypeTotalMarketValue(calculateTotalMarketValueByMajorSecurityType(holdings));
-        dto.setMinorSecurityTypeTotalMarketValue(calculateTotalMarketValueByMinorSecurityType(holdings));
+        dto.setMinorSecurityTypeTotalMarketValue(calculateTotalMarketValueByMajorAndMinorSecurityType(holdings));
         dto.setHoldings(toDTOs(holdings));
 
         return dto;
@@ -107,7 +109,7 @@ public class AccountServiceImpl implements AccountService {
 		
 		for (Holding holding : holdings) {
 			String countryOfIssuer = holding.getCountryOfIssuer();
-			BigDecimal marketBaseValue = holding.getMarketBaseValue() != null ? holding.getMarketBaseValue() : new BigDecimal(ZERO);
+			BigDecimal marketBaseValue = getHoldingValue(holding.getMarketBaseValue());
 			
 			if (map.containsKey(countryOfIssuer)) {
 				map.put(countryOfIssuer, map.get(countryOfIssuer).add(marketBaseValue));
@@ -119,11 +121,15 @@ public class AccountServiceImpl implements AccountService {
 		return map;
 	}
 
+	private BigDecimal getHoldingValue(BigDecimal marketBaseValue) {
+		return marketBaseValue != null ? marketBaseValue : new BigDecimal(ZERO);
+	}
+
 	private BigDecimal calculateTotalMarketValue(List<Holding> holdings) {
 		BigDecimal totalMarketValue = new BigDecimal(ZERO);
 
 		for (Holding holding : holdings) {
-			BigDecimal marketBaseValue = holding.getMarketBaseValue() != null ? holding.getMarketBaseValue() : new BigDecimal(ZERO);
+			BigDecimal marketBaseValue = getHoldingValue(holding.getMarketBaseValue());
 			
 			totalMarketValue = totalMarketValue.add(marketBaseValue);
 		}
@@ -131,21 +137,75 @@ public class AccountServiceImpl implements AccountService {
 		return totalMarketValue;
 	}
 
-	Map<String, Map<String, BigDecimal>> calculateTotalMarketValueByMinorSecurityType(List<Holding> holdings) {
-        return holdings.stream()
-                .collect(Collectors.groupingBy(Holding::getMajorSecurityType))
-                .entrySet().stream()
-                .collect(Collectors.toMap(e -> e.getKey(), e -> calculateTotalMarketValue(e.getValue(), Holding::getMinorSecurityType)));
+	Map<String, Map<String, BigDecimal>> calculateTotalMarketValueByMajorAndMinorSecurityType(List<Holding> holdings) {
+		Map<String, Map<String, BigDecimal>> holdingByMajorAndMinorSecType = new HashMap<>();
+		Map<String, List<Holding>> map = groupHoldingsByMajorSecurityType(holdings);
+		
+		Set<String> majorSecurityTypes = map.keySet();
+		for (String majorSecurityType : majorSecurityTypes) {
+			List<Holding> holdingsByMajorSecType = map.get(majorSecurityType);
+			
+			holdingByMajorAndMinorSecType.put(majorSecurityType, calculateTotalMarketValueByMinorSecurityType(holdingsByMajorSecType));
+		}
+
+		return holdingByMajorAndMinorSecType;
+		
+	}
+
+	private Map<String, List<Holding>> groupHoldingsByMajorSecurityType(List<Holding> holdings) {
+		Map<String, List<Holding>> map = new HashMap<>();
+		for (Holding holding : holdings) {
+			String majorSecurityType = holding.getMajorSecurityType();
+			if (majorSecurityType != null) {
+				if (!map.containsKey(majorSecurityType)) {
+					List<Holding> holdingsForMajorSecurity = new ArrayList<>();
+					map.put(majorSecurityType, holdingsForMajorSecurity);
+				}
+				map.get(majorSecurityType).add(holding);
+			}
+		}
+		return map;
 	}
 
 	Map<String, BigDecimal> calculateTotalMarketValueByMajorSecurityType(List<Holding> holdings) {
-        return calculateTotalMarketValue(holdings, Holding::getMajorSecurityType);
+
+		Map<String, BigDecimal> map = new HashMap<>();
+		
+		for (Holding holding : holdings) {
+			String majorSecurityType = holding.getMajorSecurityType();
+			if (majorSecurityType != null) {
+				
+				BigDecimal marketBaseValue = getHoldingValue(holding.getMarketBaseValue());
+				if (map.containsKey(majorSecurityType)) {
+					map.put(majorSecurityType, map.get(majorSecurityType).add(marketBaseValue));
+				} else {
+					map.put(majorSecurityType, marketBaseValue);
+				}
+			}
+		}
+
+		
+		return map;
 	}
 
-	private <P> Map<P, BigDecimal> calculateTotalMarketValue(List<Holding> holdings, Function<? super Holding, ? extends P> groupByFunc) {
-        return holdings.stream()
-                .collect(Collectors.groupingBy(groupByFunc,
-                        Collectors.reducing(BigDecimal.ZERO, Holding::getMarketBaseValue, BigDecimal::add)));
+	private Map<String, BigDecimal> calculateTotalMarketValueByMinorSecurityType(List<Holding> holdings) {
+		
+		Map<String, BigDecimal> map = new HashMap<>();
+		
+		for (Holding holding : holdings) {
+			String minorSecurityType = holding.getMinorSecurityType();
+			if (minorSecurityType != null) {
+				
+				BigDecimal marketBaseValue = getHoldingValue(holding.getMarketBaseValue());
+				if (map.containsKey(minorSecurityType)) {
+					map.put(minorSecurityType, map.get(minorSecurityType).add(marketBaseValue));
+				} else {
+					map.put(minorSecurityType, marketBaseValue);
+				}
+			}
+		}
+		
+		
+		return map;
 	}
-
 }

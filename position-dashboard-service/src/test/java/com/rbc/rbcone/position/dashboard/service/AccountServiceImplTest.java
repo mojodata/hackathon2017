@@ -57,6 +57,6 @@ public class AccountServiceImplTest {
         expected.put("major1", expectedMinor1);
         expected.put("major2", expectedMinor2);
 
-        assertEquals(expected, fixture.calculateTotalMarketValueByMinorSecurityType(holdings));
+        assertEquals(expected, fixture.calculateTotalMarketValueByMajorAndMinorSecurityType(holdings));
     }
 }
