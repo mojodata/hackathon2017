@@ -1,6 +1,5 @@
 package com.rbc.rbcone.position.dashboard.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,14 +37,8 @@ public class DashBoardRestController {
 	}
 	
 	@GetMapping(path="coordinates/{countryCode}", produces=MediaType.APPLICATION_JSON_VALUE)
-	public List<RegionDTO> getCountryRegions(@PathVariable(name="countryCode") String countryCode) {
-		List<RegionDTO> regionDTOs = new ArrayList<>();
-		for (Region region : countryService.getCountryRegions(countryCode)) {
-			RegionDTO regionDTO = new RegionDTO();
-			regionDTO.setLat(region.getLat());
-			regionDTO.setLng(region.getLng());
-		}
-		return regionDTOs;
+	public List<Region> getCountryRegions(@PathVariable(name="countryCode") String countryCode) {
+		return countryService.getCountryRegions(countryCode);
 	}
 
 }
