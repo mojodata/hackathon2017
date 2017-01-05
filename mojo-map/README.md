@@ -1,3 +1,8 @@
+# Deploy to Bluemix
+- ng build
+- copy nginx.conf dist (if not already there)
+- cf push mojo-map -b https://github.com/cloudfoundry-community/staticfile-buildpack.git -p dist
+
 # MojoMap
 
 This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.24.

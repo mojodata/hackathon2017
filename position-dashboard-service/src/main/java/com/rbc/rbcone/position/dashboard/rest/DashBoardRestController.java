@@ -1,5 +1,6 @@
 package com.rbc.rbcone.position.dashboard.rest;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,9 @@ import com.rbc.rbcone.position.dashboard.model.Coordinate;
 import com.rbc.rbcone.position.dashboard.model.Region;
 import com.rbc.rbcone.position.dashboard.service.AccountService;
 import com.rbc.rbcone.position.dashboard.service.CountryService;
+import com.rometools.rome.feed.synd.SyndFeed;
+import com.rometools.rome.io.SyndFeedInput;
+import com.rometools.rome.io.XmlReader;
 
 @RestController()
 @RequestMapping("/api")
@@ -51,6 +55,13 @@ public class DashBoardRestController {
 			regions.add(region.getCoordinates());
 		}
 		return regions;
+	}
+	
+	@GetMapping("rssTest")
+	public void rssTest() throws Exception {
+		String url = "http://stackoverflow.com/feeds/tag?tagnames=rome";
+		SyndFeed feed = new SyndFeedInput().build(new XmlReader(new URL(url)));
+		System.out.println(feed.getTitle());
 	}
 
 }

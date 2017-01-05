@@ -40,8 +40,8 @@ export class SearchBarComponent implements OnInit, OnChanges {
   }
 
   getAccounts(): Observable<Account[]> {
-    // return this.http.get("http://position-dashboard-service.mybluemix.net/api/accounts")
-    return this.http.get("http://localhost:3000/accounts")
+    return this.http.get("/api/accounts")
+//    return this.http.get("http://localhost:3000/accounts")
       .map(this.extractAccounts)
       .catch(this.handleAccountsError);
   }
