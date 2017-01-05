@@ -1,0 +1,11 @@
+	<form class="form-inline" #f="ngForm">
+		<div class="form-group">
+			<label class="sr-only" for="accountSelector">Account</label>
+			<select name="account" [(ngModel)]="account" class="form-control">
+				<option value="" disabled>Choose an account</option>
+				<option *ngFor="let account of accounts" [ngValue]="account">{{account.accountName}}</option>
+			</select>
+		</div>
+	</form>
+
+	Selected Account: {{account | json}}
