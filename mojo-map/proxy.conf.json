@@ -1,0 +1,6 @@
+{
+  "/api": {
+    "target": "http://position-dashboard-service.mybluemix.net",
+    "secure": false
+  }
+}

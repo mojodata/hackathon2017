@@ -3,12 +3,10 @@ package com.rbc.rbcone.position.dashboard.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.text.*;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -69,6 +67,11 @@ public class MigrationUtil {
         countryName = countryName.replace("C I ", "");
 
         String code = countryCodeMap.get(countryName.toLowerCase());
+
+        if (code == null) {
+            logger.warn("Unknow country: " + countryName);
+        }
+
         return code == null ? countryName : code;
     }
 
@@ -97,6 +100,5 @@ public class MigrationUtil {
 
 //        writeToFile(accountsMigrationScript, createSqlInsertForAccount(holdingsfilename));
         writeToFile(holdingsMigrationScript, createSqlInsertForHolding(holdingsfilename));
-//        System.out.println("'A".replaceAll("'", "\\\\'" ));
     }
 }

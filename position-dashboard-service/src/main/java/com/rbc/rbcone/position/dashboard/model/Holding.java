@@ -17,6 +17,8 @@ import javax.persistence.SequenceGenerator;
 @Entity
 public class Holding implements Serializable {
 
+	private static final String UNKNOWN = "unknown";
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -106,7 +108,11 @@ public class Holding implements Serializable {
 	}
 
 	public String getCountryOfIssuer() {
-		return countryOfIssuer;
+		return replaceNullWithUnknown(countryOfIssuer);
+	}
+
+	private String replaceNullWithUnknown(String value) {
+		return value !=null ? value : UNKNOWN;
 	}
 
 	public void setCountryOfIssuer(String countryOfIssuer) {
@@ -114,7 +120,7 @@ public class Holding implements Serializable {
 	}
 
 	public String getMajorSecurityType() {
-		return majorSecurityType;
+		return replaceNullWithUnknown(majorSecurityType);
 	}
 
 	public void setMajorSecurityType(String majorSecurityType) {
@@ -122,7 +128,7 @@ public class Holding implements Serializable {
 	}
 
 	public String getMinorSecurityType() {
-		return minorSecurityType;
+		return replaceNullWithUnknown(minorSecurityType);
 	}
 
 	public void setMinorSecurityType(String minorSecurityType) {

@@ -1,10 +1,9 @@
 package com.rbc.rbcone.position.dashboard.rest;
 
-import com.rbc.rbcone.position.dashboard.model.Security;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
+
+import com.rbc.rbcone.position.dashboard.model.Security;
 
 public class HoldingDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
