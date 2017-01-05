@@ -1,5 +1,6 @@
 package com.rbc.rbcone.position.dashboard.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rbc.rbcone.position.dashboard.model.Coordinate;
 import com.rbc.rbcone.position.dashboard.model.Region;
 import com.rbc.rbcone.position.dashboard.service.AccountService;
 import com.rbc.rbcone.position.dashboard.service.CountryService;
@@ -43,8 +45,12 @@ public class DashBoardRestController {
 	}
 
 	@GetMapping(path="coordinates/{countryCode}", produces=MediaType.APPLICATION_JSON_VALUE)
-	public List<Region> getCountryRegions(@PathVariable(name="countryCode") String countryCode) {
-		return countryService.getCountryRegions(countryCode);
+	public List<List<Coordinate>> getCountryRegions(@PathVariable(name="countryCode") String countryCode) {
+		List<List<Coordinate>> regions = new ArrayList<>();
+		for (Region region : countryService.getCountryRegions(countryCode)) {
+			regions.add(region.getCoordinates());
+		}
+		return regions;
 	}
 
 }
