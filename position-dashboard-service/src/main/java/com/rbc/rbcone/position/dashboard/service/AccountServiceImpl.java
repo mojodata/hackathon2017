@@ -43,7 +43,6 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public AccountHoldingDTO getHoldings(String accountNumber) {
-		AccountHoldingDTO dto = new AccountHoldingDTO();
 		List<Holding> holdings;
 		
 		if (ALL_ACCOUNTS.equals(accountNumber)) {
@@ -51,14 +50,26 @@ public class AccountServiceImpl implements AccountService {
 		} else {
 			holdings = holdingRepository.findByAccountNumber(accountNumber);
 		}
-		
-		dto.setTotalMarketValue(calculateTotalMarketValue(holdings));
-		dto.setCountryTotalMarketValue(calculateTotalMarketValueByCountry(holdings));
-		dto.setMajorSecurityTypeTotalMarketValue(calculateTotalMarketValueByMajorSecurityType(holdings));
-		dto.setHoldings(toDTOs(holdings));
-		
-		return dto;
+
+        return toAccountHoldingDTO(holdings);
 	}
+
+	@Override
+	public AccountHoldingDTO getHoldings(String accountNumber, String country) {
+        return toAccountHoldingDTO(holdingRepository.findByAccountNumberAndCountryOfIssuer(accountNumber, country));
+	}
+
+    private AccountHoldingDTO toAccountHoldingDTO(List<Holding> holdings) {
+        AccountHoldingDTO dto = new AccountHoldingDTO();
+
+        dto.setTotalMarketValue(calculateTotalMarketValue(holdings));
+        dto.setCountryTotalMarketValue(calculateTotalMarketValueByCountry(holdings));
+        dto.setMajorSecurityTypeTotalMarketValue(calculateTotalMarketValueByMajorSecurityType(holdings));
+        dto.setMinorSecurityTypeTotalMarketValue(calculateTotalMarketValueByMinorSecurityType(holdings));
+        dto.setHoldings(toDTOs(holdings));
+
+        return dto;
+    }
 
 	private List<HoldingDTO> toDTOs(List<Holding> holdings) {
 		List<HoldingDTO> holdingDTOs = new ArrayList<>();
@@ -83,10 +94,11 @@ public class AccountServiceImpl implements AccountService {
 		dto.setMinorSecurityType(holding.getMinorSecurityType());
 		dto.setPortfolioCurrency(holding.getPortfolioCurrency());
 		dto.setPrice(holding.getPrice());
+		dto.setSecurityId(holding.getSecurityId());
 		dto.setSecurityDescription(holding.getSecurityDescription());
 		dto.setSedol(holding.getSedol());
 		dto.setUnits(holding.getUnits());
-		
+
 		return dto;
 	}
 

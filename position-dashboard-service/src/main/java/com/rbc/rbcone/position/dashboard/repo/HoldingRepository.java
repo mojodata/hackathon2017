@@ -11,4 +11,7 @@ import com.rbc.rbcone.position.dashboard.model.Holding;
 public interface HoldingRepository extends JpaRepository<Holding, Long> {
 	
     List<Holding> findByAccountNumber(String accountNumber);
+
+    List<Holding> findByAccountNumberAndCountryOfIssuer(String accountNumber, String countryOfIssuer);
+
 }

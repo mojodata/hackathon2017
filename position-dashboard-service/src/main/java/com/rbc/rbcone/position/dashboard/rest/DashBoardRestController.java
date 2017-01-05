@@ -36,7 +36,13 @@ public class DashBoardRestController {
 	public AccountHoldingDTO getHoldings(@PathVariable(name="accountNumber", required=true) String accountNumber) {
 		return accountService.getHoldings(accountNumber);
 	}
-	
+
+	@GetMapping(path="accounts/{accountNumber}/{country}/holdings", produces=MediaType.APPLICATION_JSON_VALUE)
+	public AccountHoldingDTO getHoldings(@PathVariable(name="accountNumber", required=true) String accountNumber,
+                                         @PathVariable(name="country", required=true) String country) {
+		return accountService.getHoldings(accountNumber, country);
+	}
+
 	@GetMapping(path="coordinates/{countryCode}", produces=MediaType.APPLICATION_JSON_VALUE)
 	public List<RegionDTO> getCountryRegions(@PathVariable(name="countryCode") String countryCode) {
 		List<RegionDTO> regionDTOs = new ArrayList<>();
