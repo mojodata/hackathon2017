@@ -1,10 +1,9 @@
 package com.rbc.rbcone.position.dashboard.service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +54,7 @@ public class AccountServiceImpl implements AccountService {
 		
 		dto.setTotalMarketValue(calculateTotalMarketValue(holdings));
 		dto.setCountryTotalMarketValue(calculateTotalMarketValueByCountry(holdings));
+		dto.setMajorSecurityTypeTotalMarketValue(calculateTotalMarketValueByMajorSecurityType(holdings));
 		dto.setHoldings(toDTOs(holdings));
 		
 		return dto;
@@ -109,7 +109,7 @@ public class AccountServiceImpl implements AccountService {
 
 	private BigDecimal calculateTotalMarketValue(List<Holding> holdings) {
 		BigDecimal totalMarketValue = new BigDecimal(ZERO);
-		
+
 		for (Holding holding : holdings) {
 			BigDecimal marketBaseValue = holding.getMarketBaseValue() != null ? holding.getMarketBaseValue() : new BigDecimal(ZERO);
 			
@@ -118,5 +118,22 @@ public class AccountServiceImpl implements AccountService {
 		
 		return totalMarketValue;
 	}
-	
+
+	Map<String, Map<String, BigDecimal>> calculateTotalMarketValueByMinorSecurityType(List<Holding> holdings) {
+        return holdings.stream()
+                .collect(Collectors.groupingBy(Holding::getMajorSecurityType))
+                .entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey(), e -> calculateTotalMarketValue(e.getValue(), Holding::getMinorSecurityType)));
+	}
+
+	Map<String, BigDecimal> calculateTotalMarketValueByMajorSecurityType(List<Holding> holdings) {
+        return calculateTotalMarketValue(holdings, Holding::getMajorSecurityType);
+	}
+
+	private <P> Map<P, BigDecimal> calculateTotalMarketValue(List<Holding> holdings, Function<? super Holding, ? extends P> groupByFunc) {
+        return holdings.stream()
+                .collect(Collectors.groupingBy(groupByFunc,
+                        Collectors.reducing(BigDecimal.ZERO, Holding::getMarketBaseValue, BigDecimal::add)));
+	}
+
 }

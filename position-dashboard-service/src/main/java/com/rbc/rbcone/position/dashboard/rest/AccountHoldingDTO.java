@@ -12,6 +12,8 @@ public class AccountHoldingDTO implements Serializable {
 	
 	private BigDecimal totalMarketValue;
 	private Map<String, BigDecimal> countryTotalMarketValue = new HashMap<>();
+	private Map<String, BigDecimal> majorSecurityTypeTotalMarketValue = new HashMap<>();
+	private Map<String, Map<String, BigDecimal>> minorSecurityTypeTotalMarketValue = new HashMap<>();
 	private List<HoldingDTO> holdings = new ArrayList<>();
 
 	public BigDecimal getTotalMarketValue() {
@@ -28,6 +30,22 @@ public class AccountHoldingDTO implements Serializable {
 
 	public void setCountryTotalMarketValue(Map<String, BigDecimal> countryTotalMarketValue) {
 		this.countryTotalMarketValue = countryTotalMarketValue;
+	}
+
+	public Map<String, BigDecimal> getMajorSecurityTypeTotalMarketValue() {
+		return majorSecurityTypeTotalMarketValue;
+	}
+
+	public void setMajorSecurityTypeTotalMarketValue(Map<String, BigDecimal> majorSecurityTypeTotalMarketValue) {
+		this.majorSecurityTypeTotalMarketValue = majorSecurityTypeTotalMarketValue;
+	}
+
+	public Map<String, Map<String, BigDecimal>> getMinorSecurityTypeTotalMarketValue() {
+		return minorSecurityTypeTotalMarketValue;
+	}
+
+	public void setMinorSecurityTypeTotalMarketValue(Map<String, Map<String, BigDecimal>> minorSecurityTypeTotalMarketValue) {
+		this.minorSecurityTypeTotalMarketValue = minorSecurityTypeTotalMarketValue;
 	}
 
 	public List<HoldingDTO> getHoldings() {
