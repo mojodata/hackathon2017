@@ -1,7 +1,10 @@
 package com.rbc.rbcone.position.dashboard.rest;
 
+import com.rbc.rbcone.position.dashboard.model.Security;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 public class HoldingDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -142,4 +145,7 @@ public class HoldingDTO implements Serializable {
 		this.marketBaseValue = marketBaseValue;
 	}
 
+    private Security toSecurity() {
+        return new Security(portfolioCurrency, marketBaseValue, securityDescription);
+    }
 }
