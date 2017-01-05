@@ -1,0 +1,26 @@
+			<sebm-google-map [latitude]="lat" [longitude]="lng" [zoom]="1" [zoomControl]="false" [disableDoubleClickZoom]="true">
+			<!--
+	  		<sebm-google-map-marker [latitude]="lat" [longitude]="lng" [title]="'title1'" [openInfoWindow]="true"></sebm-google-map-marker>
+	  		<sebm-google-map-kml-layer [url]="kmlUrl"></sebm-google-map-kml-layer>
+	  	-->
+	  		<app-map-country [modal]="lgModal"></app-map-country>	
+			</sebm-google-map>
+
+<!--
+<button class="btn btn-primary" (click)="lgModal.show()">Large modal</button>
+-->
+<div bsModal #lgModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="lgModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Large modal</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+    </div>
+  </div>
+</div>	  
