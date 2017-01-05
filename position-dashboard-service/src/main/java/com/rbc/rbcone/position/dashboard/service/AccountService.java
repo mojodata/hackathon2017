@@ -10,4 +10,6 @@ public interface AccountService {
 
 	AccountHoldingDTO getHoldings(String accountNumber);
 
+    AccountHoldingDTO getHoldings(String accountNumber, String country);
+
 }

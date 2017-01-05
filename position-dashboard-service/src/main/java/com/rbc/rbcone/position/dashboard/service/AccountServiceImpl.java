@@ -1,10 +1,9 @@
 package com.rbc.rbcone.position.dashboard.service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,7 +43,6 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public AccountHoldingDTO getHoldings(String accountNumber) {
-		AccountHoldingDTO dto = new AccountHoldingDTO();
 		List<Holding> holdings;
 		
 		if (ALL_ACCOUNTS.equals(accountNumber)) {
@@ -52,13 +50,26 @@ public class AccountServiceImpl implements AccountService {
 		} else {
 			holdings = holdingRepository.findByAccountNumber(accountNumber);
 		}
-		
-		dto.setTotalMarketValue(calculateTotalMarketValue(holdings));
-		dto.setCountryTotalMarketValue(calculateTotalMarketValueByCountry(holdings));
-		dto.setHoldings(toDTOs(holdings));
-		
-		return dto;
+
+        return toAccountHoldingDTO(holdings);
 	}
+
+	@Override
+	public AccountHoldingDTO getHoldings(String accountNumber, String country) {
+        return toAccountHoldingDTO(holdingRepository.findByAccountNumberAndCountryOfIssuer(accountNumber, country));
+	}
+
+    private AccountHoldingDTO toAccountHoldingDTO(List<Holding> holdings) {
+        AccountHoldingDTO dto = new AccountHoldingDTO();
+
+        dto.setTotalMarketValue(calculateTotalMarketValue(holdings));
+        dto.setCountryTotalMarketValue(calculateTotalMarketValueByCountry(holdings));
+        dto.setMajorSecurityTypeTotalMarketValue(calculateTotalMarketValueByMajorSecurityType(holdings));
+        dto.setMinorSecurityTypeTotalMarketValue(calculateTotalMarketValueByMinorSecurityType(holdings));
+        dto.setHoldings(toDTOs(holdings));
+
+        return dto;
+    }
 
 	private List<HoldingDTO> toDTOs(List<Holding> holdings) {
 		List<HoldingDTO> holdingDTOs = new ArrayList<>();
@@ -83,10 +94,11 @@ public class AccountServiceImpl implements AccountService {
 		dto.setMinorSecurityType(holding.getMinorSecurityType());
 		dto.setPortfolioCurrency(holding.getPortfolioCurrency());
 		dto.setPrice(holding.getPrice());
+		dto.setSecurityId(holding.getSecurityId());
 		dto.setSecurityDescription(holding.getSecurityDescription());
 		dto.setSedol(holding.getSedol());
 		dto.setUnits(holding.getUnits());
-		
+
 		return dto;
 	}
 
@@ -109,7 +121,7 @@ public class AccountServiceImpl implements AccountService {
 
 	private BigDecimal calculateTotalMarketValue(List<Holding> holdings) {
 		BigDecimal totalMarketValue = new BigDecimal(ZERO);
-		
+
 		for (Holding holding : holdings) {
 			BigDecimal marketBaseValue = holding.getMarketBaseValue() != null ? holding.getMarketBaseValue() : new BigDecimal(ZERO);
 			
@@ -118,5 +130,22 @@ public class AccountServiceImpl implements AccountService {
 		
 		return totalMarketValue;
 	}
-	
+
+	Map<String, Map<String, BigDecimal>> calculateTotalMarketValueByMinorSecurityType(List<Holding> holdings) {
+        return holdings.stream()
+                .collect(Collectors.groupingBy(Holding::getMajorSecurityType))
+                .entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey(), e -> calculateTotalMarketValue(e.getValue(), Holding::getMinorSecurityType)));
+	}
+
+	Map<String, BigDecimal> calculateTotalMarketValueByMajorSecurityType(List<Holding> holdings) {
+        return calculateTotalMarketValue(holdings, Holding::getMajorSecurityType);
+	}
+
+	private <P> Map<P, BigDecimal> calculateTotalMarketValue(List<Holding> holdings, Function<? super Holding, ? extends P> groupByFunc) {
+        return holdings.stream()
+                .collect(Collectors.groupingBy(groupByFunc,
+                        Collectors.reducing(BigDecimal.ZERO, Holding::getMarketBaseValue, BigDecimal::add)));
+	}
+
 }
