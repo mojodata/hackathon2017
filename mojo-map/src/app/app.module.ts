@@ -20,7 +20,7 @@ import { AccountService } from './account.service';
 import { CoordinateService } from './coordinate.service';
 import { MapColorService } from './map-color.service';
 import { HoldingsTableComponent } from './holdings-table/holdings-table.component';
-
+import { NewsFeedService } from './news-feed/news-feed.service';
 
 @NgModule({
   declarations: [
@@ -44,7 +44,7 @@ import { HoldingsTableComponent } from './holdings-table/holdings-table.componen
       apiKey: 'AIzaSyBSEpfaA0EKpfElDPEDQOQGSDyhs_l8P2I'
     })
   ],
-  providers: [AccountService, CoordinateService, MapColorService],
+  providers: [AccountService, CoordinateService, MapColorService, NewsFeedService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

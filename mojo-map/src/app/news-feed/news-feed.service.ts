@@ -1,39 +1,24 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+
 import { Observable } from 'rxjs/Observable';
-import { Observer } from 'rxjs/Observer';
+
+import { $WebSocket, WebSocketSendMode } from 'angular2-websocket/angular2-websocket';
 
 @Injectable()
 export class NewsFeedService {
 
-    private subject: Subject<string>;
+    private static readonly NEWS_FEED_URL: string = 'ws://localhost:8080/newsfeed';
 
-    connect(url: string): Subject<string> {
-        if (!this.subject) {
-            this.subject = this.create(url);
-        }
-        return this.subject;
+    private newsFeed: $WebSocket;
+
+    constructor() {
+        this.newsFeed = new $WebSocket(NewsFeedService.NEWS_FEED_URL);
+        this.newsFeed.setSend4Mode(WebSocketSendMode.Direct);
     }
 
-    private create(url): Subject<string> {
-        let ws = new WebSocket(url);
-
-        let observable = Observable.create((obs: Observer<string>) => {
-            ws.onmessage = obs.next.bind(obs);
-            ws.onerror = obs.error.bind(obs);
-            ws.onclose = obs.complete.bind(obs);
-
-            return ws.close.bind(ws);
-        });
-
-        let observer = {
-            next: (data: Object) => {
-                if (ws.readyState === WebSocket.OPEN) {
-                    ws.send(JSON.stringify(data));
-                }
-            },
-        };
-
-        return Subject.create(observer, observable);
+    subscribeToNews(topic: string): Observable<any> {
+        this.newsFeed.send(topic);
+        return this.newsFeed.getDataStream();
     }
+
 }
