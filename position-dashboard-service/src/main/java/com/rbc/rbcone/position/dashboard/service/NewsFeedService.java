@@ -7,5 +7,5 @@ import java.util.List;
  */
 public interface NewsFeedService {
 
-    public List<String> getNews(String keyword, String country);
+    public String getNews(String keyword, String country) throws Exception;
 }

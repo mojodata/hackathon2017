@@ -9,6 +9,7 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		System.out.println("message: " + message.getPayload());
-		session.sendMessage(message); //echo message back
+		TextMessage responseMessage = new TextMessage("bar", false);
+		session.sendMessage(responseMessage);
 	}
 }

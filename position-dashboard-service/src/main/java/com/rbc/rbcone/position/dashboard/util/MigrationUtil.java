@@ -19,7 +19,7 @@ public class MigrationUtil {
 
     private static final String COUNTRY_CODE_FILE = "src/main/resources/data/country_code.csv";
     private static final String INSERT_ACC_PREFIX = "INSERT INTO account (account_id, account_number, account_name)\n";
-    private static final String INSERT_HOLDING_PREFIX = "INSERT INTO holding (holding_id, account_number, portfolio_currency, report_date, country_of_issuer, major_security_type, minor_security_type, security_identifier, cusip_seqcurity_number, security_number_isin, sedol_security_number, long_security_description, units, book_base_value, price, market_base_value)\n";
+    private static final String INSERT_HOLDING_PREFIX = "INSERT INTO holding (holding_id, account_number, portfolio_currency, report_date, country_of_issuer, major_security_type, minor_security_type, industry, cusip_seqcurity_number, security_number_isin, sedol_security_number, long_security_description, units, book_base_value, price, market_base_value)\n";
     private static final String ACC_VALUES_FORMAT = INSERT_ACC_PREFIX + "VALUES (seq_account.nextVal, '%s', '%s');";
     private static final String HOLDING_VALUES_FORMAT = INSERT_HOLDING_PREFIX + "VALUES (seq_holding.nextVal, '%s', '%s', " +
             "TO_DATE('%s', 'yyyy/mm/dd hh24:mi:ss'), '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %f, %f, %f, %f);";
@@ -47,7 +47,7 @@ public class MigrationUtil {
     private static void writeToFile(String filename, String content) {
         Path path = FileSystems.getDefault().getPath(filename);
         try {
-            Files.write(path, content.getBytes(), StandardOpenOption.WRITE);
+            Files.write(path, content.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
         } catch (Exception ex) {
             logger.error("Cannot write to file: " + filename);
         }

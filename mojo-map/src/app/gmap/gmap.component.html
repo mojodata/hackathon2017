@@ -1,14 +1,15 @@
-			<sebm-google-map [latitude]="lat" [longitude]="lng" [zoom]="1" [zoomControl]="false" [disableDoubleClickZoom]="true">
-			<!--
-	  		<sebm-google-map-marker [latitude]="lat" [longitude]="lng" [title]="'title1'" [openInfoWindow]="true"></sebm-google-map-marker>
-	  		<sebm-google-map-kml-layer [url]="kmlUrl"></sebm-google-map-kml-layer>
-	  	-->
-	  		<app-map-country [modal]="lgModal"></app-map-country>	
+			<sebm-google-map [latitude]="lat" [longitude]="lng" 
+                      [zoom]="1" [zoomControl]="true" [mapDraggable]="false">
+<!--
+        <app-map-country [modal]="lgModal" [country]="'US'"></app-map-country>  
+-->
+        <app-map-country [modal]="lgModal" [countries]="countries" (countryChange)="onCountryChange($event)"></app-map-country>  
 			</sebm-google-map>
 
 <!--
 <button class="btn btn-primary" (click)="lgModal.show()">Large modal</button>
 -->
+
 <div bsModal #lgModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -16,10 +17,23 @@
         <button type="button" class="close" (click)="lgModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title">Large modal</h4>
+        <h4 class="modal-title">{{targetCountry}}</h4>
       </div>
       <div class="modal-body">
-        ...
+        <div *ngIf="holding">
+          <h2>Total Market Value: {{holding.totalMarketValue}}</h2>
+          <h3>Major Security Type Total Market Value:</h3>
+          <div *ngFor="let aMajorKey of majorKeys">
+            {{aMajorKey}} {{holding.majorSecurityTypeTotalMarketValue[aMajorKey]}}
+          </div>
+          <div *ngFor="let aMinorKey of minorKeys">
+            {{aMinorKey}} {{holding.minorSecurityTypeTotalMarketValue[aMinorKey]}}
+          </div>
+          <!--
+          <h4>Minor Security Type Total Market Value: {{holding.minorSecurityTotalMaretValue['Fixed Income']['FOREIGN GOVERNMENT BONDS']}}</h4>
+          -->
+          <app-holdings-table></app-holdings-table>
+        </div>
       </div>
     </div>
   </div>
