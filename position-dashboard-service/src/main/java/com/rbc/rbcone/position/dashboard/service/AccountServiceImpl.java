@@ -35,7 +35,8 @@ public class AccountServiceImpl implements AccountService {
 		List<Account> accounts = accountRepository.findAll();
 		
 		List<AccountDTO> accountDTOs = new ArrayList<>();
-
+		accountDTOs.add(new AccountDTO(ALL_ACCOUNTS, "All Accounts"));
+		
 		for (Account account : accounts) {
 			accountDTOs.add(new AccountDTO(account.getAccountNumber(), account.getAccountName()));
 		}
@@ -47,7 +48,7 @@ public class AccountServiceImpl implements AccountService {
 	public AccountHoldingDTO getHoldings(String accountNumber) {
 		List<Holding> holdings;
 		
-		if (ALL_ACCOUNTS.equals(accountNumber)) {
+		if (ALL_ACCOUNTS.equalsIgnoreCase(accountNumber)) {
 			holdings = holdingRepository.findAll();
 		} else {
 			holdings = holdingRepository.findByAccountNumber(accountNumber);

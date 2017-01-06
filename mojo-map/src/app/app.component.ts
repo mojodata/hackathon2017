@@ -1,4 +1,6 @@
-import { Component, ViewContainerRef } from '@angular/core';
+import { Component, ViewContainerRef, OnChanges, SimpleChanges } from '@angular/core';
+import { Ng2MapComponent } from 'ng2-map';
+import Account from './dto/account.dto';
 // import './rxjs-operators';
 
 @Component({
@@ -9,9 +11,16 @@ import { Component, ViewContainerRef } from '@angular/core';
 export class AppComponent {
 	private viewContainerRef: ViewContainerRef;
 
+	account: Account;
+
 	public constructor(viewContainerRef: ViewContainerRef) {
 		this.viewContainerRef = viewContainerRef;
+		Ng2MapComponent['apiUrl'] = 'https://map.google.com/maps/api/js?key=AIzaSyBSEpfaA0EKpfElDPEDQOQGSDyhs_l8P2I';
 	}
 
   title = 'Mojo UI!';
+
+  onAccountUpdated(account: Account) {
+  	this.account = account;
+  }
 }
