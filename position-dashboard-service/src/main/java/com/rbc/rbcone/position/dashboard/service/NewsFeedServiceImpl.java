@@ -1,16 +1,8 @@
 package com.rbc.rbcone.position.dashboard.service;
 
-import com.mashape.unirest.http.Unirest;
-import org.apache.commons.codec.net.URLCodec;
-import org.apache.http.client.utils.URIUtils;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriUtils;
 
-import javax.print.DocFlavor;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.util.List;
+import com.mashape.unirest.http.Unirest;
 
 /**
  * Created by wayneyu on 1/5/17.

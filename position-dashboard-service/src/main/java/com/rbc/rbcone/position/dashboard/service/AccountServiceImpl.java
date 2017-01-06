@@ -1,8 +1,8 @@
 package com.rbc.rbcone.position.dashboard.service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +23,7 @@ import com.rbc.rbcone.position.dashboard.rest.HoldingDTO;
 @Service
 public class AccountServiceImpl implements AccountService {
 
-	private static final BigDecimal SCALE_SIZE = new BigDecimal("12.0");;
+	private static final int SCALE_SIZE = 12;
 	private static final String ZERO = "0.0";
 	private static final String ALL_ACCOUNTS = "ALL";
 
@@ -120,7 +120,7 @@ public class AccountServiceImpl implements AccountService {
 					countryMarketValueDTO.setTotalMarketValue(countryMarketValueDTO.getTotalMarketValue().add(marketBaseValue));
 					map.put(countryOfIssuer, countryMarketValueDTO);
 				} else {
-					CountryMarketValueDTO countryMarketValueDTO = new CountryMarketValueDTO(marketBaseValue, 0);
+					CountryMarketValueDTO countryMarketValueDTO = new CountryMarketValueDTO(marketBaseValue, 0, countryOfIssuer);
 					map.put(countryOfIssuer, countryMarketValueDTO);
 				}
 			}
@@ -130,27 +130,22 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	private Map<String, CountryMarketValueDTO> calculateCountryRanks(Map<String, CountryMarketValueDTO> map, BigDecimal totalMarketValue) {
-		Set<String> countryKeys = map.keySet();
+		List<CountryMarketValueDTO> values = new ArrayList<>(map.values());
+		Collections.sort(values);
 		
-		for (String countryKey : countryKeys) {
-			CountryMarketValueDTO countryMarketValueDTO = map.get(countryKey);
-			countryMarketValueDTO.setRank(calculateScaledRank(totalMarketValue, countryMarketValueDTO.getTotalMarketValue()));
+		int rank = 1;
+		
+		for (CountryMarketValueDTO dto : values) {
+			CountryMarketValueDTO countryMarketValueDTO = map.get(dto.getCountryCode());
+			countryMarketValueDTO.setRank(rank);
+			if (rank < SCALE_SIZE) {
+				rank++;
+			}
 		}
 		
 		return map;
 	}
 
-	private int calculateScaledRank(BigDecimal total, BigDecimal portion) {
-		if (portion == null || total == null || total.equals(ZERO)) {
-			return 0;
-		}
-		
-		BigDecimal multiply = portion.multiply(SCALE_SIZE);
-		BigDecimal inScale = multiply.divide(total, RoundingMode.HALF_DOWN);
-		
-		return inScale.intValue();
-		
-	}
 
 	private BigDecimal getHoldingValue(BigDecimal marketBaseValue) {
 		return marketBaseValue != null ? marketBaseValue : new BigDecimal(ZERO);
