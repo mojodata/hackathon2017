@@ -18,6 +18,7 @@ import { TooltipAccountComponent } from './tooltip-account/tooltip-account.compo
 import { NewsFeedComponent } from './news-feed/news-feed.component';
 import { AccountService } from './account.service';
 import { CoordinateService } from './coordinate.service';
+import { MapColorService } from './map-color.service';
 import { HoldingsTableComponent } from './holdings-table/holdings-table.component';
 
 
@@ -38,12 +39,12 @@ import { HoldingsTableComponent } from './holdings-table/holdings-table.componen
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
     Ng2MapModule,
-    // Ng2SmartTableModule,
+    Ng2SmartTableModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyBSEpfaA0EKpfElDPEDQOQGSDyhs_l8P2I'
     })
   ],
-  providers: [AccountService, CoordinateService],
+  providers: [AccountService, CoordinateService, MapColorService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -5,6 +5,7 @@ import { Ng2MapComponent } from "ng2-map";
 import { SebmGoogleMap, SebmGoogleMapPolygon, PolygonManager } from 'angular2-google-maps/core';
 import { GoogleMapsAPIWrapper } from 'angular2-google-maps/core';
 import Account from '../dto/account.dto';
+import Country from '../dto/country.dto';
 import { AccountService } from '../account.service';
 import { Observable } from 'rxjs/Observable';
 import { CoordinateService } from '../coordinate.service';
@@ -24,13 +25,12 @@ export class GmapComponent implements OnInit, OnChanges {
   anyErrors: boolean;
   finished: boolean;
 
-  countries: Array<string>;
+  countries: Array<Country>;
 
-  targetCountry: string;
+  targetCountryName: string;
+  targetCountryCode: string;
 
   holding: any;
-  majorKeys: Array<string>;
-  minorKeys: Array<string>;
 
   constructor(private accountService: AccountService,
               private coordinateService: CoordinateService, private polygonManager: PolygonManager) {
@@ -52,22 +52,30 @@ export class GmapComponent implements OnInit, OnChanges {
     }
   }
 
-  getAllCountries(anAccountDetail: any): Array<string> {
-    return Object.keys(anAccountDetail.countryTotalMarketValue).filter((key) => key !== "unknown");
+  getAllCountries(anAccountDetail: any): Array<Country> {
+    let keys = Object.keys(anAccountDetail.countryTotalMarketValue);
+
+    let countries = [];
+
+    keys.forEach(aKey => {
+      let aCountry = anAccountDetail.countryTotalMarketValue[aKey];
+      countries.push(new Country(aKey, aCountry.totalMarketValue, aCountry.rank));
+    });
+
+    return countries;
   }
 
-  onCountryChange(country) {
-    this.targetCountry = country;
-    let subscription = this.accountService.getHoldings(this.account, country).subscribe(
+  onCountryChange(countryCode) {
+    console.debug(`Country Code Change: ${countryCode}`);
+    this.targetCountryCode = countryCode;
+    this.targetCountryName = this.coordinateService.getCountryName(countryCode);
+    let subscription = this.accountService.getHoldings(this.account, countryCode).subscribe(
       (aHolding) => {
-        console.log(`${JSON.stringify(aHolding)}`);
+        // console.log(`${JSON.stringify(aHolding)}`);
         this.holding = aHolding;
-        this.majorKeys = Object.keys(aHolding.majorSecurityTypeTotalMarketValue);
-        this.minorKeys = Object.keys(aHolding.minorSecurityTypeTotalMarketValue);
       },
       error => this.anyErrors = true,
       () => this.finished = true
     );
-
   }
 }

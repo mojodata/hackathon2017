@@ -3,10 +3,13 @@ import { Output, EventEmitter } from '@angular/core';
 import { OnChanges, SimpleChanges } from '@angular/core';
 import { ModalDirective } from 'ng2-bootstrap';
 import { CoordinateService } from '../coordinate.service';
+import { MapColorService } from '../map-color.service';
 import { Observable } from 'rxjs/Observable';
 
 import { LatLng, LatLngLiteral, PolygonManager, SebmGoogleMapPolygon } from 'angular2-google-maps/core';
 import { PolyMouseEvent } from 'angular2-google-maps/core';
+
+import Country from '../dto/country.dto';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -21,7 +24,7 @@ import 'rxjs/add/operator/toPromise';
 export class MapCountryComponent implements OnInit, OnChanges {
 
   @Input()
-  countries: Array<string>;
+  countries: Array<Country>;
 
 
   @Output()
@@ -36,6 +39,7 @@ export class MapCountryComponent implements OnInit, OnChanges {
   constructor(
                 private coordinateService: CoordinateService
                 , private polygonManager: PolygonManager
+                , private mapColorSevice: MapColorService
   ) {}
 
   ngOnInit() {
@@ -50,13 +54,14 @@ export class MapCountryComponent implements OnInit, OnChanges {
 
     if (changes['countries'].currentValue) {
       changes['countries'].currentValue.forEach(aCountry => {
-        let subscription = this.coordinateService.getRegions(aCountry).subscribe(
+        let subscription = this.coordinateService.getRegions(aCountry.code).subscribe(
           paths => paths.forEach((aPath) => {
               let addedPolygon = this.coordinateService.addRegion(
                                                                     this.polygonManager,
                                                                     aPath,
-                                                                    "#FFFF00",
-                                                                    aCountry,
+                                                                    this.mapColorSevice.getColorCodeByRank(aCountry.rank),
+                                                                    // "#FFFF00",
+                                                                    aCountry.code,
                                                                     this.onMouseClick,
                                                                     this);
               this.polygons.push(addedPolygon);
