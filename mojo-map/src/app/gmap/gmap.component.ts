@@ -66,7 +66,6 @@ export class GmapComponent implements OnInit, OnChanges {
   }
 
   onCountryChange(countryCode) {
-    console.debug(`Country Code Change: ${countryCode}`);
     this.targetCountryCode = countryCode;
     this.targetCountryName = this.coordinateService.getCountryName(countryCode);
     let subscription = this.accountService.getHoldings(this.account, countryCode).subscribe(

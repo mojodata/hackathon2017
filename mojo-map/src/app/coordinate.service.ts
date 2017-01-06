@@ -25,6 +25,7 @@ export class CoordinateService {
    let aPolygon = new SebmGoogleMapPolygon(polygonManager);
     aPolygon.paths = aRegion;
     aPolygon.fillColor = fillColor;
+    aPolygon.fillOpacity = 1.0;
 
     /*
     aPolygon.polyClick.subscribe(
