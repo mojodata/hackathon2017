@@ -23,7 +23,7 @@ import com.rbc.rbcone.position.dashboard.rest.HoldingDTO;
 @Service
 public class AccountServiceImpl implements AccountService {
 
-	private static final int SCALE_SIZE = 12;
+	private static final int SCALE_SIZE = 10;
 	private static final String ZERO = "0.0";
 	private static final String ALL_ACCOUNTS = "ALL";
 
@@ -62,7 +62,15 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public AccountHoldingDTO getHoldings(String accountNumber, String country) {
-        return toAccountHoldingDTO(holdingRepository.findByAccountNumberAndCountryOfIssuer(accountNumber, country));
+		List<Holding> holdings;
+
+		if (ALL_ACCOUNTS.equalsIgnoreCase(accountNumber)) {
+			holdings = holdingRepository.findByCountryOfIssuer(country);
+		} else {
+			holdings = holdingRepository.findByAccountNumberAndCountryOfIssuer(accountNumber, country);
+		}
+
+        return toAccountHoldingDTO(holdings);
 	}
 
     private AccountHoldingDTO toAccountHoldingDTO(List<Holding> holdings) {

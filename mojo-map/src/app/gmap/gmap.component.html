@@ -1,4 +1,4 @@
-      <h3 *ngIf="accountDetail">Total Market Value: {{accountDetail.totalMarketValue}}</h3>
+      <h3 *ngIf="accountDetail">Total Market Value: {{accountDetail.totalMarketValue | currency:'USD':true}}</h3>
 			<sebm-google-map [latitude]="lat" [longitude]="lng" 
                       [zoom]="1" [zoomControl]="true" [mapDraggable]="false">
 <!--
@@ -22,7 +22,7 @@
       </div>
       <div class="modal-body">
         <div *ngIf="holding">
-          <h3>Total Market Value: {{holding.totalMarketValue}}</h3>
+          <h3>Total Market Value: {{holding.totalMarketValue | currency:'USD':true}}</h3>
           <app-holdings-table [data]="holding.holdings"></app-holdings-table>
         </div>
       </div>

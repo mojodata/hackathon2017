@@ -60,7 +60,7 @@ export class MapCountryComponent implements OnInit, OnChanges {
                                                                     this.polygonManager,
                                                                     aPath,
                                                                     this.mapColorSevice.getColorCodeByRank(aCountry.rank),
-                                                                    // "#FFFF00",
+                                                                    // '#FF0000',
                                                                     aCountry.code,
                                                                     this.onMouseClick,
                                                                     this);
