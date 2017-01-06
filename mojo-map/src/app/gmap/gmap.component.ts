@@ -5,6 +5,7 @@ import { Ng2MapComponent } from "ng2-map";
 import { SebmGoogleMap, SebmGoogleMapPolygon, PolygonManager } from 'angular2-google-maps/core';
 import { GoogleMapsAPIWrapper } from 'angular2-google-maps/core';
 import Account from '../dto/account.dto';
+import Country from '../dto/country.dto';
 import { AccountService } from '../account.service';
 import { Observable } from 'rxjs/Observable';
 import { CoordinateService } from '../coordinate.service';
@@ -24,7 +25,7 @@ export class GmapComponent implements OnInit, OnChanges {
   anyErrors: boolean;
   finished: boolean;
 
-  countries: Array<string>;
+  countries: Array<Country>;
 
   targetCountryName: string;
   targetCountryCode: string;
@@ -51,8 +52,17 @@ export class GmapComponent implements OnInit, OnChanges {
     }
   }
 
-  getAllCountries(anAccountDetail: any): Array<string> {
-    return Object.keys(anAccountDetail.countryTotalMarketValue).filter((key) => key !== "unknown");
+  getAllCountries(anAccountDetail: any): Array<Country> {
+    let keys = Object.keys(anAccountDetail.countryTotalMarketValue);
+
+    let countries = [];
+
+    keys.forEach(aKey => {
+      let aCountry = anAccountDetail.countryTotalMarketValue[aKey];
+      countries.push(new Country(aKey, aCountry.totalMarketValue, aCountry.rank));
+    });
+
+    return countries;
   }
 
   onCountryChange(countryCode) {
