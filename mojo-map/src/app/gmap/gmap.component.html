@@ -22,7 +22,7 @@
       </div>
       <div class="modal-body">
         <div *ngIf="holding">
-          <h2>Total Market Value: {{holding.totalMarketValue}}</h2>
+          <h3>Total Market Value: {{holding.totalMarketValue}}</h3>
           <app-holdings-table [data]="holding.holdings"></app-holdings-table>
         </div>
       </div>
