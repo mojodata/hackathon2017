@@ -19,7 +19,8 @@ public class MigrationUtil {
 
     private static final String COUNTRY_CODE_FILE = "src/main/resources/data/country_code.csv";
     private static final String INSERT_ACC_PREFIX = "INSERT INTO account (account_id, account_number, account_name)\n";
-    private static final String INSERT_HOLDING_PREFIX = "INSERT INTO holding (holding_id, account_number, portfolio_currency, report_date, country_of_issuer, major_security_type, minor_security_type, industry, cusip_seqcurity_number, security_number_isin, sedol_security_number, long_security_description, units, book_base_value, price, market_base_value)\n";
+    private static final String INSERT_HOLDING_PREFIX = "INSERT INTO holding (holding_id, account_number, portfolio_currency," +
+            " report_date, country_of_issuer, major_security_type, minor_security_type, industry, cusip_seqcurity_number, security_number_isin, sedol_security_number, long_security_description, units, book_base_value, price, market_base_value)\n";
     private static final String ACC_VALUES_FORMAT = INSERT_ACC_PREFIX + "VALUES (seq_account.nextVal, '%s', '%s');";
     private static final String HOLDING_VALUES_FORMAT = INSERT_HOLDING_PREFIX + "VALUES (seq_holding.nextVal, '%s', '%s', " +
             "TO_DATE('%s', 'yyyy/mm/dd hh24:mi:ss'), '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %f, %f, %f, %f);";
@@ -38,8 +39,8 @@ public class MigrationUtil {
         return readFile(holdingsFilename)
                 .map(l -> l.split("\\|"))
                 .map(arr -> new Object[]{arr[1], arr[3], arr[0], toISOCountryCode(arr[7]), arr[9], arr[8],
-                        arr[10], arr[4], arr[6], arr[5], arr[11].replaceAll("'", "''" ), toDouble(arr[12]), toDouble(arr[13]),
-                        toDouble(arr[14]), toDouble(arr[15])})
+                        arr[10], arr[4], arr[6], arr[5], arr[11].replaceAll("'", "''" ), toAbsDouble(arr[12]), toAbsDouble(arr[13]),
+                        toAbsDouble(arr[14]), toAbsDouble(arr[15])})
                 .map(arr -> String.format(HOLDING_VALUES_FORMAT, arr))
                 .collect(Collectors.joining("\n"));
     }
@@ -53,10 +54,10 @@ public class MigrationUtil {
         }
     }
 
-    private static double toDouble(String doubleStr) {
+    private static double toAbsDouble(String doubleStr) {
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
         try {
-            return nf.parse(doubleStr).doubleValue();
+            return Math.abs(nf.parse(doubleStr).doubleValue());
         } catch (Exception ex) {
             logger.error("Cannot parse to double: " + doubleStr);
         }

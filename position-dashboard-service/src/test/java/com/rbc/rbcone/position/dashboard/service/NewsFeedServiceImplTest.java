@@ -3,8 +3,6 @@ package com.rbc.rbcone.position.dashboard.service;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.net.URLEncoder;
-
 /**
  * Created by wayneyu on 1/6/17.
  */
