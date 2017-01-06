@@ -28,7 +28,7 @@ import { HoldingsTableComponent } from './holdings-table/holdings-table.componen
     GmapComponent,
     MapCountryComponent,
     TooltipAccountComponent,
-    NewsFeedComponent
+    NewsFeedComponent,
     HoldingsTableComponent
   ],
   imports: [
