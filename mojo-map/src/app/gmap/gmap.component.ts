@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Output, EventEmitter } from '@angular/core';
 import { OnChanges, SimpleChanges } from '@angular/core';
 import { LatLng, LatLngLiteral } from 'angular2-google-maps/core';
 import { Ng2MapComponent } from "ng2-map";
@@ -26,6 +27,9 @@ export class GmapComponent implements OnInit, OnChanges {
   finished: boolean;
 
   countries: Array<Country>;
+
+  @Output()
+  countriesEmitter = new EventEmitter<Array<Country>>();
 
   targetCountryName: string;
   targetCountryCode: string;
@@ -57,10 +61,12 @@ export class GmapComponent implements OnInit, OnChanges {
 
     let countries = [];
 
-    keys.forEach(aKey => {
+    keys.filter(aKey => aKey.length === 2).forEach(aKey => {
       let aCountry = anAccountDetail.countryTotalMarketValue[aKey];
       countries.push(new Country(aKey, aCountry.totalMarketValue, aCountry.rank));
     });
+
+    this.countriesEmitter.emit(countries);
 
     return countries;
   }

@@ -1,6 +1,6 @@
       <h3 *ngIf="accountDetail">Total Market Value: {{accountDetail.totalMarketValue | currency:'USD':true}}</h3>
 			<sebm-google-map [latitude]="lat" [longitude]="lng" 
-                      [zoom]="1" [zoomControl]="true" [mapDraggable]="false">
+                      [zoom]="1" [zoomControl]="true" [mapDraggable]="true">
 <!--
         <app-map-country [modal]="lgModal" [country]="'US'"></app-map-country>  
 -->
