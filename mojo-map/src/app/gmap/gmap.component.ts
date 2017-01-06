@@ -26,11 +26,10 @@ export class GmapComponent implements OnInit, OnChanges {
 
   countries: Array<string>;
 
-  targetCountry: string;
+  targetCountryName: string;
+  targetCountryCode: string;
 
   holding: any;
-  majorKeys: Array<string>;
-  minorKeys: Array<string>;
 
   constructor(private accountService: AccountService,
               private coordinateService: CoordinateService, private polygonManager: PolygonManager) {
@@ -56,14 +55,13 @@ export class GmapComponent implements OnInit, OnChanges {
     return Object.keys(anAccountDetail.countryTotalMarketValue).filter((key) => key !== "unknown");
   }
 
-  onCountryChange(country) {
-    this.targetCountry = country;
-    let subscription = this.accountService.getHoldings(this.account, country).subscribe(
+  onCountryChange(countryCode) {
+    this.targetCountryCode = countryCode;
+    this.targetCountryName = this.coordinateService.getCountryName(countryCode);
+    let subscription = this.accountService.getHoldings(this.account, countryCode).subscribe(
       (aHolding) => {
-        console.log(`${JSON.stringify(aHolding)}`);
+        // console.log(`${JSON.stringify(aHolding)}`);
         this.holding = aHolding;
-        this.majorKeys = Object.keys(aHolding.majorSecurityTypeTotalMarketValue);
-        this.minorKeys = Object.keys(aHolding.minorSecurityTypeTotalMarketValue);
       },
       error => this.anyErrors = true,
       () => this.finished = true

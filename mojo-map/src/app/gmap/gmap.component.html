@@ -1,3 +1,4 @@
+      <h3 *ngIf="accountDetail">Total Market Value: {{accountDetail.totalMarketValue}}</h3>
 			<sebm-google-map [latitude]="lat" [longitude]="lng" 
                       [zoom]="1" [zoomControl]="true" [mapDraggable]="false">
 <!--
@@ -17,22 +18,12 @@
         <button type="button" class="close" (click)="lgModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title">{{targetCountry}}</h4>
+        <h4 class="modal-title">{{targetCountryName}} {{targetCountryCode}}</h4>
       </div>
       <div class="modal-body">
         <div *ngIf="holding">
           <h2>Total Market Value: {{holding.totalMarketValue}}</h2>
-          <h3>Major Security Type Total Market Value:</h3>
-          <div *ngFor="let aMajorKey of majorKeys">
-            {{aMajorKey}} {{holding.majorSecurityTypeTotalMarketValue[aMajorKey]}}
-          </div>
-          <div *ngFor="let aMinorKey of minorKeys">
-            {{aMinorKey}} {{holding.minorSecurityTypeTotalMarketValue[aMinorKey]}}
-          </div>
-          <!--
-          <h4>Minor Security Type Total Market Value: {{holding.minorSecurityTotalMaretValue['Fixed Income']['FOREIGN GOVERNMENT BONDS']}}</h4>
-          -->
-          <app-holdings-table></app-holdings-table>
+          <app-holdings-table [data]="holding.holdings"></app-holdings-table>
         </div>
       </div>
     </div>

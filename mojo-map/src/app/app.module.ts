@@ -38,7 +38,7 @@ import { HoldingsTableComponent } from './holdings-table/holdings-table.componen
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
     Ng2MapModule,
-    // Ng2SmartTableModule,
+    Ng2SmartTableModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyBSEpfaA0EKpfElDPEDQOQGSDyhs_l8P2I'
     })
