@@ -25,7 +25,10 @@ export class HoldingsTableComponent implements OnInit, OnChanges {
 				title: 'Units'
 			},
 			price: {
-				title: 'Price'
+				title: 'Price',
+				valuePrepareFunction: (value) => {
+					return `$${value}`;
+				}
 			},
 			marketBaseValue: {
 				title: 'Market Base Value'
