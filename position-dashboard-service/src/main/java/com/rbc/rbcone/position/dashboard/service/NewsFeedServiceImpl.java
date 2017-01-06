@@ -1,8 +1,16 @@
 package com.rbc.rbcone.position.dashboard.service;
 
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import com.rbc.rbcone.position.dashboard.model.NewsItem;
+import net.minidev.json.JSONArray;
 import org.springframework.stereotype.Service;
 
 import com.mashape.unirest.http.Unirest;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Created by wayneyu on 1/5/17.
@@ -17,19 +25,48 @@ public class NewsFeedServiceImpl implements NewsFeedService {
     private int counter;
 
     @Override
-    public String getNews(String keyword, String countryCode) throws Exception {
-        long sinceTimestamp = System.currentTimeMillis() - 300000;
+    public List<NewsItem> getNews(String keyword, String countryCode, long sinceTimeMillis) throws Exception {
+        String query = String.format(QUERY, TOKEN, keyword, countryCode, sinceTimeMillis);
 
-        String query = String.format(QUERY, TOKEN, keyword, countryCode, sinceTimestamp);
-        return Unirest.get(URL + "?" + query.replaceAll(" ", "%20").replaceAll(":", "%3A"))
+        String jsonResponse = Unirest.get(URL + "?" + query.replaceAll(" ", "%20").replaceAll(":", "%3A"))
                 .header("Accept", "text/plain")
                 .asString()
                 .getBody();
+
+        return getNewsItems(JsonPath.parse(jsonResponse));
     }
     
     @Override
 	public String fakeNews() {
     	return "News " + counter++;
+    }
+
+    List<String> getTitles(DocumentContext documentContext) {
+        return getFields(documentContext, "$..thread.title");
+    }
+
+    List<String> getUrls(DocumentContext documentContext) {
+        return getFields(documentContext, "$..thread.url");
+    }
+
+    private List<String> getFields(DocumentContext documentContext, String jsonPath) {
+        List<String> fields = new ArrayList<>();
+        for (Object field : documentContext.<JSONArray>read(jsonPath)) {
+            fields.add((String) field);
+        }
+        return fields;
+    }
+
+    List<NewsItem> getNewsItems(DocumentContext documentContext) {
+        List<String> urls = getUrls(documentContext);
+        List<String> titles = getTitles(documentContext);
+        List<NewsItem> items = new ArrayList<>();
+
+        for(int i = 0; i < titles.size(); i++) {
+            items.add(new NewsItem(titles.get(i), urls.get(i)));
+        }
+
+        return items;
     }
 
 }
