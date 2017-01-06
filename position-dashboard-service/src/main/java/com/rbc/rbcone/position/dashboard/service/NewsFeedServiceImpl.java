@@ -13,6 +13,8 @@ public class NewsFeedServiceImpl implements NewsFeedService {
     private static final String TOKEN = "92a7d45d-7beb-4f01-ba0f-0bb953ec7f93";
     private static final String URL = "https://webhose.io/search";
     private static final String QUERY = "token=%s&format=json&q=%s language:(english) thread.country:%s&ts=%d";
+    
+    private int counter;
 
     @Override
     public String getNews(String keyword, String countryCode) throws Exception {
@@ -23,6 +25,11 @@ public class NewsFeedServiceImpl implements NewsFeedService {
                 .header("Accept", "text/plain")
                 .asString()
                 .getBody();
+    }
+    
+    @Override
+	public String fakeNews() {
+    	return "News " + counter++;
     }
 
 }

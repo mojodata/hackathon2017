@@ -10,6 +10,8 @@ import { TooltipModule, ModalModule } from 'ng2-bootstrap';
 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 
+import { D3Service } from 'd3-ng2-service'; // <-- import statement
+
 import { AppComponent } from './app.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { GmapComponent } from './gmap/gmap.component';
@@ -20,7 +22,8 @@ import { AccountService } from './account.service';
 import { CoordinateService } from './coordinate.service';
 import { MapColorService } from './map-color.service';
 import { HoldingsTableComponent } from './holdings-table/holdings-table.component';
-
+import { DonutChartComponent } from './donut-chart/donut-chart.component';
+import { NewsFeedService } from './news-feed/news-feed.service';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,8 @@ import { HoldingsTableComponent } from './holdings-table/holdings-table.componen
     MapCountryComponent,
     TooltipAccountComponent,
     NewsFeedComponent,
-    HoldingsTableComponent
+    HoldingsTableComponent,
+    DonutChartComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +48,7 @@ import { HoldingsTableComponent } from './holdings-table/holdings-table.componen
       apiKey: 'AIzaSyBSEpfaA0EKpfElDPEDQOQGSDyhs_l8P2I'
     })
   ],
-  providers: [AccountService, CoordinateService, MapColorService],
+  providers: [AccountService, CoordinateService, MapColorService, NewsFeedService, D3Service],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

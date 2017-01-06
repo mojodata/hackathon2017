@@ -55,9 +55,11 @@ public class CountryRepository {
 
 	private void loadRegion(List<Region> regions, Map<String, JSONArray> geometryMap) {
 		Region region = new Region();
+		int downSampleRate = 10;
 		for (Object coordinatesObject : geometryMap.get("coordinates")) {
-			for (Object coordinateObject : (JSONArray) coordinatesObject) {
-				JSONArray coordinateArray = (JSONArray) coordinateObject;
+			JSONArray coordinates = (JSONArray) coordinatesObject;
+			for (int i = 0; i < coordinates.size(); i+=downSampleRate) {
+				JSONArray coordinateArray = (JSONArray) coordinates.get(i);
 				Coordinate coordinate = new Coordinate();
 				coordinate.setLng(new BigDecimal((coordinateArray.get(0)).toString()));
 				coordinate.setLat(new BigDecimal((coordinateArray.get(1)).toString()));

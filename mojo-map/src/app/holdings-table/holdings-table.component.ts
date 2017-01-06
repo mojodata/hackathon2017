@@ -13,6 +13,9 @@ export class HoldingsTableComponent implements OnInit, OnChanges {
 	@Input()
 	data: any;
 
+	@Input()
+	totalMarketValue: number;
+
 	settings = {
 		columns: {
 			securityDescription: {
@@ -31,7 +34,10 @@ export class HoldingsTableComponent implements OnInit, OnChanges {
 				}
 			},
 			marketBaseValue: {
-				title: 'Market Base Value'
+				title: 'Market Base Value',
+				valuePrepareFunction: (value) => {
+					return `$${value}`;
+				}
 			},
 			majorSecurityType: {
 				title: 'Major Security Type'
