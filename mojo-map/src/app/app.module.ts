@@ -23,6 +23,7 @@ import { CoordinateService } from './coordinate.service';
 import { MapColorService } from './map-color.service';
 import { HoldingsTableComponent } from './holdings-table/holdings-table.component';
 import { DonutChartComponent } from './donut-chart/donut-chart.component';
+import { NewsFeedService } from './news-feed/news-feed.service';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,7 @@ import { DonutChartComponent } from './donut-chart/donut-chart.component';
       apiKey: 'AIzaSyBSEpfaA0EKpfElDPEDQOQGSDyhs_l8P2I'
     })
   ],
-  providers: [AccountService, CoordinateService, MapColorService, D3Service],
+  providers: [AccountService, CoordinateService, MapColorService, NewsFeedService, D3Service],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

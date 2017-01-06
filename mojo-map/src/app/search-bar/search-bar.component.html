@@ -1,6 +1,6 @@
-	<form class="form-inline" #f="ngForm">
+	<form class="" #f="ngForm">
 		<div class="form-group">
-			<label class="sr-only" for="accountSelector">Account</label>
+			<label class="" for="accountSelector">Account</label>
 			<select name="account" [(ngModel)]="account" class="form-control" (change)="onAccountChange($event)">
 				<option value="" disabled>Choose an account</option>
 				<option *ngFor="let account of accounts" [ngValue]="account">{{account.accountName}}</option>

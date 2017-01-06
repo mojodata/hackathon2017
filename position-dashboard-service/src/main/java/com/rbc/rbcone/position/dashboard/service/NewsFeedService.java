@@ -6,4 +6,6 @@ package com.rbc.rbcone.position.dashboard.service;
 public interface NewsFeedService {
 
     public String getNews(String keyword, String country) throws Exception;
+    
+    public String fakeNews();
 }
