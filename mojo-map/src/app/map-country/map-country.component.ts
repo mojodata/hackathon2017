@@ -60,7 +60,7 @@ export class MapCountryComponent implements OnInit, OnChanges {
                                                                     this.polygonManager,
                                                                     aPath,
                                                                     this.mapColorSevice.getColorCodeByRank(aCountry.rank),
-                                                                    // "#FFFF00",
+                                                                    // '#FF0000',
                                                                     aCountry.code,
                                                                     this.onMouseClick,
                                                                     this);
@@ -78,7 +78,6 @@ export class MapCountryComponent implements OnInit, OnChanges {
   }
 
   onMouseClick(country: string, clickedPoint: any, origin: MapCountryComponent) {
-  	console.debug(`Mouse Click: ${country}, ${JSON.stringify(clickedPoint.latLng)}`);
     origin.countryChange.emit(country);
   	origin.showModal();
   }
