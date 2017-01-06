@@ -18,7 +18,7 @@
         <button type="button" class="close" (click)="lgModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title">{{targetCountryName}} {{targetCountryCode}}</h4>
+        <h4 class="modal-title">{{targetCountryName}} {{targetCountryCode}} <span *ngIf="holding">{{holding.totalMarketValue | currency:'USD':true}}</span></h4>
       </div>
       <div class="modal-body">
         <div *ngIf="holding">

@@ -1,13 +1,21 @@
-  <h3>Total Market Value: {{totalMarketValue | currency:'USD':true}}</h3>
-	<form class="form-inline">
-		<div class="form-group">
-			<label class="sr-only" for="tableSearch">Search in Table</label>
-			<div class="input-group">
-				<div class="input-group-addon">
-					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+<div class="row">
+	<div class="col-xs-12">
+		<form class="form-inline">
+			<div class="form-group">
+				<label class="sr-only" for="tableSearch">Search in Table</label>
+				<div class="input-group">
+					<div class="input-group-addon">
+						<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+					</div>
+					<input #search class="search form-control" id="tableSearch" type="text" placeholder="Search in Table ..." (keydown.enter)="onSearch(search.value)">
 				</div>
-				<input #search class="search form-control" id="tableSearch" type="text" placeholder="Search in Table ..." (keydown.enter)="onSearch(search.value)">
 			</div>
-		</div>
-	</form>
-	<ng2-smart-table [settings]="settings" [source]="source"></ng2-smart-table>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-12">
+		<ng2-smart-table [settings]="settings" [source]="source"></ng2-smart-table>
+	</div>
+</div>
