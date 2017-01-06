@@ -12,7 +12,7 @@ public class NewsFeedWebsocketConfig implements WebSocketConfigurer {
 
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		registry.addHandler(newsFeedHandler(), "/newsfeed");
+		registry.addHandler(newsFeedHandler(), "/newsfeed").setAllowedOrigins("*");
 	}
 	
 	@Bean
