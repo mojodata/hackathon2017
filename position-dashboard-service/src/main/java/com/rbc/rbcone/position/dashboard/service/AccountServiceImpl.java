@@ -1,6 +1,7 @@
 package com.rbc.rbcone.position.dashboard.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,11 +17,13 @@ import com.rbc.rbcone.position.dashboard.repo.AccountRepository;
 import com.rbc.rbcone.position.dashboard.repo.HoldingRepository;
 import com.rbc.rbcone.position.dashboard.rest.AccountDTO;
 import com.rbc.rbcone.position.dashboard.rest.AccountHoldingDTO;
+import com.rbc.rbcone.position.dashboard.rest.CountryMarketValueDTO;
 import com.rbc.rbcone.position.dashboard.rest.HoldingDTO;
 
 @Service
 public class AccountServiceImpl implements AccountService {
 
+	private static final BigDecimal SCALE_SIZE = new BigDecimal("12.0");;
 	private static final String ZERO = "0.0";
 	private static final String ALL_ACCOUNTS = "ALL";
 
@@ -66,7 +69,7 @@ public class AccountServiceImpl implements AccountService {
         AccountHoldingDTO dto = new AccountHoldingDTO();
 
         dto.setTotalMarketValue(calculateTotalMarketValue(holdings));
-        dto.setCountryTotalMarketValue(calculateTotalMarketValueByCountry(holdings));
+        dto.setCountryTotalMarketValue(calculateTotalMarketValueByCountry(holdings, dto.getTotalMarketValue()));
         dto.setMajorSecurityTypeTotalMarketValue(calculateTotalMarketValueByMajorSecurityType(holdings));
         dto.setMinorSecurityTypeTotalMarketValue(calculateTotalMarketValueByMajorAndMinorSecurityType(holdings));
         dto.setHoldings(toDTOs(holdings));
@@ -105,22 +108,48 @@ public class AccountServiceImpl implements AccountService {
 		return dto;
 	}
 
-	private Map<String, BigDecimal> calculateTotalMarketValueByCountry(List<Holding> holdings) {
-		Map<String, BigDecimal> map = new HashMap<>();
+	private Map<String, CountryMarketValueDTO> calculateTotalMarketValueByCountry(List<Holding> holdings, BigDecimal totalMarketValue) {
+		Map<String, CountryMarketValueDTO> map = new HashMap<>();
 		
 		for (Holding holding : holdings) {
 			String countryOfIssuer = holding.getCountryOfIssuer();
 			BigDecimal marketBaseValue = getHoldingValue(holding.getMarketBaseValue());
 			if (countryOfIssuer != null) {
 				if (map.containsKey(countryOfIssuer)) {
-					map.put(countryOfIssuer, map.get(countryOfIssuer).add(marketBaseValue));
+					CountryMarketValueDTO countryMarketValueDTO = map.get(countryOfIssuer);
+					countryMarketValueDTO.setTotalMarketValue(countryMarketValueDTO.getTotalMarketValue().add(marketBaseValue));
+					map.put(countryOfIssuer, countryMarketValueDTO);
 				} else {
-					map.put(countryOfIssuer, marketBaseValue);
+					CountryMarketValueDTO countryMarketValueDTO = new CountryMarketValueDTO(marketBaseValue, 0);
+					map.put(countryOfIssuer, countryMarketValueDTO);
 				}
 			}
 		}
 		
+		return calculateCountryRanks(map, totalMarketValue);
+	}
+
+	private Map<String, CountryMarketValueDTO> calculateCountryRanks(Map<String, CountryMarketValueDTO> map, BigDecimal totalMarketValue) {
+		Set<String> countryKeys = map.keySet();
+		
+		for (String countryKey : countryKeys) {
+			CountryMarketValueDTO countryMarketValueDTO = map.get(countryKey);
+			countryMarketValueDTO.setRank(calculateScaledRank(totalMarketValue, countryMarketValueDTO.getTotalMarketValue()));
+		}
+		
 		return map;
+	}
+
+	private int calculateScaledRank(BigDecimal total, BigDecimal portion) {
+		if (portion == null || total == null || total.equals(ZERO)) {
+			return 0;
+		}
+		
+		BigDecimal multiply = portion.multiply(SCALE_SIZE);
+		BigDecimal inScale = multiply.divide(total, RoundingMode.HALF_DOWN);
+		
+		return inScale.intValue();
+		
 	}
 
 	private BigDecimal getHoldingValue(BigDecimal marketBaseValue) {
