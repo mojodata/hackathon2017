@@ -12,6 +12,7 @@ import { SearchBarComponent } from './search-bar/search-bar.component';
 import { GmapComponent } from './gmap/gmap.component';
 import { MapCountryComponent } from './map-country/map-country.component';
 import { TooltipAccountComponent } from './tooltip-account/tooltip-account.component';
+import { NewsFeedComponent } from './news-feed/news-feed.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { TooltipAccountComponent } from './tooltip-account/tooltip-account.compo
     SearchBarComponent,
     GmapComponent,
     MapCountryComponent,
-    TooltipAccountComponent
+    TooltipAccountComponent,
+    NewsFeedComponent
   ],
   imports: [
     BrowserModule,
