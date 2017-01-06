@@ -23,7 +23,7 @@ import com.rbc.rbcone.position.dashboard.rest.HoldingDTO;
 @Service
 public class AccountServiceImpl implements AccountService {
 
-	private static final int SCALE_SIZE = 12;
+	private static final int SCALE_SIZE = 10;
 	private static final String ZERO = "0.0";
 	private static final String ALL_ACCOUNTS = "ALL";
 
