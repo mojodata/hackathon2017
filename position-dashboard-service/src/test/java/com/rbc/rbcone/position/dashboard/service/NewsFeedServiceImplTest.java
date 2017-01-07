@@ -3,6 +3,7 @@ package com.rbc.rbcone.position.dashboard.service;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -24,10 +25,9 @@ public class NewsFeedServiceImplTest {
 
     @Ignore
     public void shouldGetNewsFeedForCountry() throws Exception {
-        String keyword = "Tesla";
-        String country = "US";
+        String keyword = "RBC";
 
-        System.out.println(fixture.getNews(keyword, country, System.currentTimeMillis() - 100000));
+        System.out.println(fixture.getNews(keyword, System.currentTimeMillis() - 5000));
     }
 
     @Test
@@ -36,6 +36,6 @@ public class NewsFeedServiceImplTest {
         String response = IOUtils.toString(is);
 
         DocumentContext documentContext = JsonPath.parse(response);
-        System.out.println(fixture.getNewsItems(documentContext));
+        System.out.println(new JSONArray(fixture.getNewsItems(documentContext)).toString());
     }
 }

@@ -2,8 +2,11 @@ package com.rbc.rbcone.position.dashboard.service;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.rbc.rbcone.position.dashboard.model.NewsItem;
 import net.minidev.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.mashape.unirest.http.Unirest;
@@ -18,20 +21,29 @@ import java.util.List;
 @Service
 public class NewsFeedServiceImpl implements NewsFeedService {
 
+    private static final Logger logger = LoggerFactory.getLogger(NewsFeedServiceImpl.class);
+
     private static final String TOKEN = "92a7d45d-7beb-4f01-ba0f-0bb953ec7f93";
     private static final String URL = "https://webhose.io/search";
-    private static final String QUERY = "token=%s&format=json&q=%s language:(english) thread.country:%s&ts=%d";
+    private static final String QUERY = "token=%s&format=json&q=%s language:(english)&ts=%d";
     
     private int counter;
 
     @Override
-    public List<NewsItem> getNews(String keyword, String countryCode, long sinceTimeMillis) throws Exception {
-        String query = String.format(QUERY, TOKEN, keyword, countryCode, sinceTimeMillis);
+    public List<NewsItem> getNews(String keyword, long sinceTimeMillis) {
+        String query = String.format(QUERY, TOKEN, keyword, sinceTimeMillis);
 
-        String jsonResponse = Unirest.get(URL + "?" + query.replaceAll(" ", "%20").replaceAll(":", "%3A"))
-                .header("Accept", "text/plain")
-                .asString()
-                .getBody();
+        String jsonResponse = "";
+        try {
+            logger.info("Making news query: " + query);
+            jsonResponse = Unirest.get(URL + "?" + query.replaceAll(" ", "%20").replaceAll(":", "%3A"))
+                    .header("Accept", "text/plain")
+                    .asString()
+                    .getBody();
+            logger.debug("News response: " + jsonResponse);
+        } catch (UnirestException ex) {
+            logger.error("Error making http request.", ex);
+        }
 
         return getNewsItems(JsonPath.parse(jsonResponse));
     }

@@ -3,24 +3,26 @@ import { Observable } from 'rxjs/Observable';
 
 import { NewsFeedService } from './news-feed.service';
 
+import NewsItem from '../dto/newsItem.dto';
+
 @Component({
     selector: 'news-feed',
     templateUrl: './news-feed.component.html'
 })
 export class NewsFeedComponent implements OnInit, OnDestroy {
 
-    news: string;
+    topic: string;
 
     constructor(private newsFeedService: NewsFeedService) { }
 
+    private newsItems: NewsItem[];
+
     ngOnInit() {
-        this.news = 'Some news';
-        this.newsFeedService.subscribeToNews(this.news).subscribe(
-            res => {
-                console.log('Data: ' + res.data);
-            },
-            function (e) { console.log('Error: ' + e.message); },
-            function () { console.log('Completed'); }
+        this.topic = 'Canada';
+        let subscription = this.newsFeedService.subscribeToNews(this.topic).subscribe(
+          res => this.newsItems = JSON.parse(res.data),
+          e => { console.log('Error: ' + e.message); },
+          () => { console.log('Completed'); }
         );
     }
 

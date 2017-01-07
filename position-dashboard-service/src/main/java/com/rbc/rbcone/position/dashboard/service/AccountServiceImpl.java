@@ -1,12 +1,9 @@
 package com.rbc.rbcone.position.dashboard.service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,6 +71,11 @@ public class AccountServiceImpl implements AccountService {
 	}
 
     private AccountHoldingDTO toAccountHoldingDTO(List<Holding> holdings) {
+
+		holdings = holdings.stream()
+				.distinct()
+				.collect(Collectors.toList());
+
         AccountHoldingDTO dto = new AccountHoldingDTO();
 
         dto.setTotalMarketValue(calculateTotalMarketValue(holdings));

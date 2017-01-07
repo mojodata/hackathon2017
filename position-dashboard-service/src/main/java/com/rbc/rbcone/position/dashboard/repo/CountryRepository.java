@@ -55,7 +55,7 @@ public class CountryRepository {
 
 	private void loadRegion(List<Region> regions, Map<String, JSONArray> geometryMap) {
 		Region region = new Region();
-		int downSampleRate = 10;
+		int downSampleRate = 1;
 		for (Object coordinatesObject : geometryMap.get("coordinates")) {
 			JSONArray coordinates = (JSONArray) coordinatesObject;
 			for (int i = 0; i < coordinates.size(); i+=downSampleRate) {

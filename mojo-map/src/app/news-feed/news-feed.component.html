@@ -1,2 +1,4 @@
 <h3>News Feed</h3>
-{{news}}
+<tr *ngFor="let newsItem of newsItems">
+    <a href="{{newsItem.url}}">{{newsItem.title}}</a>
+</tr>

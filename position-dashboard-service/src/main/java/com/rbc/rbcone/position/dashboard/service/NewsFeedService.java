@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface NewsFeedService {
 
-    public List<NewsItem> getNews(String keyword, String country, long sinceTimeMillis) throws Exception;
+    public List<NewsItem> getNews(String keyword, long sinceTimeMillis);
 
     public String fakeNews();
 }

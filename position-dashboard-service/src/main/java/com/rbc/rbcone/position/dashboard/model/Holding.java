@@ -2,6 +2,7 @@ package com.rbc.rbcone.position.dashboard.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -214,7 +215,27 @@ public class Holding implements Serializable {
 	public void setMarketBaseValue(BigDecimal marketBaseValue) {
 		this.marketBaseValue = marketBaseValue;
 	}
-	
-	
 
+	@Override
+	public boolean equals(Object o) {
+		Holding other = (Holding) o;
+		if (!this.securityDescription.equals(other.getSecurityDescription())){
+			return false;
+		} else if (!this.securityId.equals(other.getSecurityId())){
+			return false;
+		} else if (!this.isin.equals(other.getIsin())){
+			return false;
+		} else if (!this.sedol.equals(other.getSedol())){
+			return false;
+		} else if (!this.cusip.equals(other.getCusip())){
+			return false;
+		} else if (!this.majorSecurityType.equals(other.getMajorSecurityType())){
+			return false;
+		} else if (!this.minorSecurityType.equals(other.getMinorSecurityType())){
+			return false;
+		} else if (!this.industry.equals(other.getIndustry())){
+			return false;
+		}
+		return true;
+	}
 }
