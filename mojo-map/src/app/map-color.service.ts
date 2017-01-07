@@ -19,7 +19,6 @@ export class MapColorService {
 		'#749DFF'
 	*/
 
-	/*
 		'#6AADE4',
 		'#0051A5',
 		'#B8A970',
@@ -32,8 +31,8 @@ export class MapColorService {
 		'#5D3566',
 		'#E486E4',
 		'#FFC0CB'
-	*/
 
+/*
 		'#000512',
 		'#002274',
 		'#003FD6',
@@ -46,6 +45,7 @@ export class MapColorService {
 		'#EAF0FF',
 		'#EAF0FF',
 		'#EAF0FF'
+*/
 	];
 
   constructor() { }

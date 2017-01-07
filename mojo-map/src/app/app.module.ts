@@ -10,7 +10,6 @@ import { TooltipModule, ModalModule } from 'ng2-bootstrap';
 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 
-import { D3Service } from 'd3-ng2-service'; // <-- import statement
 
 import { AppComponent } from './app.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
@@ -25,6 +24,13 @@ import { HoldingsTableComponent } from './holdings-table/holdings-table.componen
 import { DonutChartComponent } from './donut-chart/donut-chart.component';
 import { NewsFeedService } from './news-feed/news-feed.service';
 
+import * as d3 from 'd3';
+import * as nv from 'nvd3';
+// declare module 'd3' { let exportAs: any; export = exportAs; }
+// declare module 'nv' { let exportAs: any; export = exportAs; }
+
+import { nvD3 } from 'ng2-nvd3';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,6 +40,7 @@ import { NewsFeedService } from './news-feed/news-feed.service';
     TooltipAccountComponent,
     NewsFeedComponent,
     HoldingsTableComponent,
+    nvD3,
     DonutChartComponent
   ],
   imports: [
@@ -48,7 +55,7 @@ import { NewsFeedService } from './news-feed/news-feed.service';
       apiKey: 'AIzaSyBSEpfaA0EKpfElDPEDQOQGSDyhs_l8P2I'
     })
   ],
-  providers: [AccountService, CoordinateService, MapColorService, NewsFeedService, D3Service],
+  providers: [AccountService, CoordinateService, MapColorService, NewsFeedService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

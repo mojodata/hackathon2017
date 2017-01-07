@@ -1,41 +1,93 @@
-import {
-  OnChanges,
-  AfterViewInit,
-  Input,
-  ElementRef,
-  ViewChild
-} from '@angular/core';
-import { D3Service, D3, Selection } from 'd3-ng2-service';
-import * as Moment from 'moment';
+import { AfterViewInit, Input, ElementRef, ViewChild } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
+import { OnChanges, SimpleChanges } from '@angular/core';
+import Country from '../dto/country.dto';
+import DonutDataPoint from '../dto/donutDataPoint.dto';
+import 'rxjs/add/operator/map';
+
+declare let d3: any;
 
 @Component({
   selector: 'app-donut-chart',
   templateUrl: './donut-chart.component.html',
   styleUrls: ['./donut-chart.component.css']
 })
-export class DonutChartComponent implements OnInit {
+export class DonutChartComponent implements OnInit, OnChanges {
 
-  private d3: D3; // <-- Define the private member which will hold the d3 reference
-  private parentNativeElement: any;
+  @Input()
+  countries: Array<Country>;
 
-  constructor(element: ElementRef, d3Service: D3Service) { // <-- pass the D3 Service into the constructor
-    this.d3 = d3Service.getD3(); // <-- obtain the d3 object from the D3 Service
-    this.parentNativeElement = element.nativeElement;
+	options: any;
+	data: any;
+
+  constructor() {
+
   }
 
   ngOnInit() {
-    let d3 = this.d3; // <-- for convenience use a block scope variable
-    let d3ParentElement: Selection<any, any, any, any>; // <-- Use the Selection interface (very basic here for illustration only)
+  	this.options = {
+  		chart: {
+  			type: 'pieChart',
+        height: 900,
+  			donut: true,
+        donutRatio: 0.9,
+  			x: function(d) {return d.label;},
+  			y: function(d) {return d.value;},
+  			showLabels: true,
+  			pie: {
+  				startAngle: d => (d.startAngle - Math.PI) * 0.75,
+  				endAngle: d => (d.endAngle - Math.PI) * 0.75
+  			},
+  			duration: 500,
+  			legend: {
+  				margin: {
+  					top: 5,
+  					right: 140,
+  					bottom: 5,
+  					left: 0
+  				}
+  			}
+  		}
+  	};
 
-// ...
+  	this.data = [
+/*
+  		{
+  			key: "One",
+  			y: 5
+  		},
+  		{
+  			key: "Two",
+  			y: 2
+  		},
+  		{
+  			key: "Three",
+  			y: 9
+  		},
+  		{
+  			key: "Four",
+  			y: 7
+  		},
+  		{
+  			key: "Five",
+  			y: 4 
+  		},
+  		{
+  			key: "Six",
+  			y: 3
+  		},
+  		{
+  			key: "Seven",
+  			y: 0.5
+  		}
+*/
+  	];
+  }
 
-    if (this.parentNativeElement !== null) {
-
-      d3ParentElement = d3.select(this.parentNativeElement); // <-- use the D3 select method 
-
-      // Do more D3 things 
-
+  ngOnChanges(changes: SimpleChanges) {
+    // console.log(`Data Changes: ${JSON.stringify(changes['countries']['currentValue'])}`);
+    if (this.countries) {
+      this.data = this.countries.map(aCountry => new DonutDataPoint(aCountry.code, aCountry.marketValue));
     }
   }
 

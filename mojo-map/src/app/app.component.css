@@ -1,0 +1,16 @@
+.blue-background {
+	background-color: #6AADE4;
+}
+
+.white-background {
+	background-color: white;
+}
+
+.blue-white-gradient-background {
+	background: linear-gradient(to right, #6AADE4, white);
+}
+
+.no-padding {
+	padding-left: 0;
+	padding-right: 0;
+}
