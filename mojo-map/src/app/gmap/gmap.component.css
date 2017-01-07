@@ -1,3 +1,15 @@
 .sebm-google-map-container {
   height: 343px;
 }
+
+.total-market-value {
+	color: #6AADE4;
+}
+
+#map {
+	height: 100%;
+}
+
+.left-padding {
+	padding-left: 15px;
+}

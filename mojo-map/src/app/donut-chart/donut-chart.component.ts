@@ -2,6 +2,8 @@ import { AfterViewInit, Input, ElementRef, ViewChild } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { OnChanges, SimpleChanges } from '@angular/core';
 import Country from '../dto/country.dto';
+import DonutDataPoint from '../dto/donutDataPoint.dto';
+import 'rxjs/add/operator/map';
 
 declare let d3: any;
 
@@ -26,14 +28,15 @@ export class DonutChartComponent implements OnInit, OnChanges {
   	this.options = {
   		chart: {
   			type: 'pieChart',
-  			height: 450,
+        height: 900,
   			donut: true,
-  			x: function(d) {return d.key;},
-  			y: function(d) {return d.y;},
+        donutRatio: 0.9,
+  			x: function(d) {return d.label;},
+  			y: function(d) {return d.value;},
   			showLabels: true,
   			pie: {
-  				startAngle: d => d.startAngle/2 - Math.PI/2,
-  				endAngle: d => d.endAngle/2 - Math.PI/2
+  				startAngle: d => (d.startAngle - Math.PI) * 0.75,
+  				endAngle: d => (d.endAngle - Math.PI) * 0.75
   			},
   			duration: 500,
   			legend: {
@@ -48,6 +51,7 @@ export class DonutChartComponent implements OnInit, OnChanges {
   	};
 
   	this.data = [
+/*
   		{
   			key: "One",
   			y: 5
@@ -76,11 +80,15 @@ export class DonutChartComponent implements OnInit, OnChanges {
   			key: "Seven",
   			y: 0.5
   		}
+*/
   	];
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(`Data Changes: ${JSON.stringify(changes['countries']['currentValue'])}`);
+    // console.log(`Data Changes: ${JSON.stringify(changes['countries']['currentValue'])}`);
+    if (this.countries) {
+      this.data = this.countries.map(aCountry => new DonutDataPoint(aCountry.code, aCountry.marketValue));
+    }
   }
 
 }

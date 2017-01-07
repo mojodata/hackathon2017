@@ -1,16 +1,24 @@
-<div class="container">
-	<h1><a href="#" [tooltip]="'Abc'">{{ title }}</a></h1>
-
-	<!-- this creates a google map on the page with the given lat/lng from -->
-	<!-- the component as the initial center of the map: -->
-	<div class="row">
-		<div class="col-md-3 col-xs-12">
-			<app-search-bar (accountUpdated)="onAccountUpdated($event)"></app-search-bar>
-		</div>
-		<div class="col-md-9 col-xs-12">
+<div class="container-fluid">
+	<div class="row blue-background">
+		<div class="col-md-9 col-xs-12 no-padding white-background">
 			<app-gmap [account]="account" (countriesEmitter)="onCountriesUpdated($event)"></app-gmap>
 		</div>
-		<div class="col-md-9 col-xs-12">
+		<div class="col-md-3 col-xs-12">
+			<div class="row">
+				<div class="col-xs-12 blue-white-gradient-background">
+					<h5>Mojo in Hackathon!</h5>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<app-search-bar (accountUpdated)="onAccountUpdated($event)"></app-search-bar>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr />
+	<div class="row">
+		<div class="col-xs-12">
 			<app-donut-chart [countries]="countries"></app-donut-chart>
 		</div>
 	</div>
