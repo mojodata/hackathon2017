@@ -1,4 +1,4 @@
-import {np
+import {
   OnChanges,
   AfterViewInit,
   Input,

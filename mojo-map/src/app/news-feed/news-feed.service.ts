@@ -9,16 +9,20 @@ export class NewsFeedService {
 
     private static readonly NEWS_FEED_URL: string = 'ws://localhost:8080/newsfeed';
 
-    private newsFeed: $WebSocket;
+    private newsFeedSocket: $WebSocket;
 
     constructor() {
-        this.newsFeed = new $WebSocket(NewsFeedService.NEWS_FEED_URL);
-        this.newsFeed.setSend4Mode(WebSocketSendMode.Direct);
+        this.newsFeedSocket = new $WebSocket(NewsFeedService.NEWS_FEED_URL);
+        this.newsFeedSocket.setSend4Mode(WebSocketSendMode.Direct);
     }
 
     subscribeToNews(topic: string): Observable<any> {
-        this.newsFeed.send(topic);
-        return this.newsFeed.getDataStream();
+        this.newsFeedSocket.send(topic);
+        return this.newsFeedSocket.getDataStream();
+    }
+
+    closeFeed() {
+        this.newsFeedSocket.close(true);
     }
 
 }

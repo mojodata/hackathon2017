@@ -1,5 +1,5 @@
 # Deploy to Bluemix
-- ng build
+- ng build --prod
 - copy nginx.conf dist (if not already there)
 - cf push mojo-map -b https://github.com/cloudfoundry-community/staticfile-buildpack.git -p dist
 
