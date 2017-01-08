@@ -14,6 +14,8 @@ import com.rbc.rbcone.position.dashboard.model.RssNewsItem;
 import com.rbc.rbcone.position.dashboard.service.NewsFeedService;
 
 public class NewsFeedHandler extends TextWebSocketHandler {
+
+	private static final Logger logger = LoggerFactory.getLogger(NewsFeedHandler.class);
 	
 	private static final long POLLING_RATE = 60000;
 	
@@ -42,9 +44,16 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-		System.out.println("topic: " + message.getPayload());
+		logger.info("Message payload: " + message.getPayload());
 		currentTopic = message.getPayload();
-		session.sendMessage(new TextMessage(newsFeedService.fakeNews()));
+		session.sendMessage(getNewsMessage(currentTopic));
+	}
+
+	private TextMessage getNewsMessage(String topic) {
+//		List<NewsItem> newsItems = newsFeedService.getNews(topic, System.currentTimeMillis() - refreshRate);
+		List<NewsItem> newsItems = Arrays.asList(new NewsItem("title" + count, "http://www.google.com"), new NewsItem("title" + count++, "http://www.google.com"));
+		logger.info("News items for topic: " + topic + " :" + newsItems);
+		return new TextMessage(new JSONArray(newsItems).toString());
 	}
 	
 	@Scheduled(fixedRate=POLLING_RATE)

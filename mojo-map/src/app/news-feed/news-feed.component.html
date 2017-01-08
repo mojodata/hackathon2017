@@ -1,7 +1,13 @@
 <h3>News Feed</h3>
+<<<<<<< HEAD
 <h4 *ngIf="topic">Topic: {{topic}}</h4>
 <div class="row">
     <div class="col-xs-12">
         <ng2-smart-table [settings]="settings" [source]="source"></ng2-smart-table>
     </div>
 </div>
+=======
+<tr *ngFor="let newsItem of newsItems">
+    <a href="{{newsItem.url}}">{{newsItem.title}}</a>
+</tr>
+>>>>>>> refs/remotes/origin/master

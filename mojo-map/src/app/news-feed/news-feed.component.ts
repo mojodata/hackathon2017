@@ -6,12 +6,15 @@ import { NewsFeedItem } from './news-feed-item';
 import { NewsFeedService } from './news-feed.service';
 import { MockNewsFeedService } from './news-feed-mock.service';
 
+import NewsItem from '../dto/newsItem.dto';
+
 @Component({
     selector: 'news-feed',
     templateUrl: './news-feed.component.html'
 })
 export class NewsFeedComponent implements OnInit, OnDestroy {
 
+<<<<<<< HEAD
     private static readonly MAX_NEWS_ITEMS = 10;
 
     topic: string;
@@ -42,10 +45,16 @@ export class NewsFeedComponent implements OnInit, OnDestroy {
 	};
 
 	source: LocalDataSource;
+=======
+    topic: string;
+>>>>>>> refs/remotes/origin/master
 
     constructor(private newsFeedService: NewsFeedService) { }
 
+    private newsItems: NewsItem[];
+
     ngOnInit() {
+<<<<<<< HEAD
         this.topic = 'Some topic';
         this.newsItems = [];
 		this.newsItems = MockNewsFeedService.getFakeNewsItems();
@@ -63,6 +72,14 @@ export class NewsFeedComponent implements OnInit, OnDestroy {
         //             console.log('Completed');
         //         }
         //     );
+=======
+        this.topic = 'Canada';
+        let subscription = this.newsFeedService.subscribeToNews(this.topic).subscribe(
+          res => this.newsItems = JSON.parse(res.data),
+          e => { console.log('Error: ' + e.message); },
+          () => { console.log('Completed'); }
+        );
+>>>>>>> refs/remotes/origin/master
     }
 
     ngOnDestroy() {

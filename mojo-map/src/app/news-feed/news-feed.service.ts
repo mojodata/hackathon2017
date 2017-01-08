@@ -4,10 +4,13 @@ import { Observable } from 'rxjs/Observable';
 
 import { $WebSocket, WebSocketSendMode } from 'angular2-websocket/angular2-websocket';
 
+import NewsItem from '../dto/newsItem.dto';
+
 @Injectable()
 export class NewsFeedService {
 
-    private static readonly NEWS_FEED_URL: string = 'ws://localhost:8080/newsfeed';
+    private static readonly NEWS_FEED_URL: string = 'ws://position-dashboard-service.mybluemix.net:8089/newsfeed';
+    //'ws://localhost:8089/newsfeed';
 
     private newsFeedSocket: $WebSocket;
 
