@@ -1,6 +1,7 @@
 package com.rbc.rbcone.position.dashboard.news;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,12 +10,18 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import com.rbc.rbcone.position.dashboard.model.RssNewsItem;
 import com.rbc.rbcone.position.dashboard.service.NewsFeedService;
 
 public class NewsFeedHandler extends TextWebSocketHandler {
 	
+	private static final long POLLING_RATE = 60000;
+	
 	@Autowired
 	private NewsFeedService newsFeedService;
+	
+	@Autowired
+	private RssNewsFeedService rssNewsFeedService;
 	
 	private WebSocketSession newsSession;
 	private String currentTopic;
@@ -40,14 +47,20 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 		session.sendMessage(new TextMessage(newsFeedService.fakeNews()));
 	}
 	
-	@Scheduled(fixedRate=5000)
-	public void checkFornews() {
+	@Scheduled(fixedRate=POLLING_RATE)
+	public void checkForNews() {
 		if (newsSession != null && currentTopic != null) {
 			try {
-				newsSession.sendMessage(new TextMessage(newsFeedService.fakeNews()));
+				String country = "CA";
+				long sinceTimeMillis = System.currentTimeMillis() - POLLING_RATE;
+//				newsSession.sendMessage(new TextMessage(serializeNewsItems(newsFeedService.getNews(currentTopic, country, sinceTimeMillis)));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	private String serializeNewsItems(List<RssNewsItem> newsItesm) {
+		return null;
 	}
 }

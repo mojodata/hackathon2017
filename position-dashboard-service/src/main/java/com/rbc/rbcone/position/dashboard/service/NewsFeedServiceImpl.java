@@ -1,15 +1,16 @@
 package com.rbc.rbcone.position.dashboard.service;
 
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
-import com.rbc.rbcone.position.dashboard.model.NewsItem;
-import net.minidev.json.JSONArray;
-import org.springframework.stereotype.Service;
-
-import com.mashape.unirest.http.Unirest;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import com.mashape.unirest.http.Unirest;
+import com.rbc.rbcone.position.dashboard.model.NewsItem;
+
+import net.minidev.json.JSONArray;
 
 
 /**
@@ -22,8 +23,6 @@ public class NewsFeedServiceImpl implements NewsFeedService {
     private static final String URL = "https://webhose.io/search";
     private static final String QUERY = "token=%s&format=json&q=%s language:(english) thread.country:%s&ts=%d";
     
-    private int counter;
-
     @Override
     public List<NewsItem> getNews(String keyword, String countryCode, long sinceTimeMillis) throws Exception {
         String query = String.format(QUERY, TOKEN, keyword, countryCode, sinceTimeMillis);
@@ -34,11 +33,6 @@ public class NewsFeedServiceImpl implements NewsFeedService {
                 .getBody();
 
         return getNewsItems(JsonPath.parse(jsonResponse));
-    }
-    
-    @Override
-	public String fakeNews() {
-    	return "News " + counter++;
     }
 
     List<String> getTitles(DocumentContext documentContext) {

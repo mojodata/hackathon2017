@@ -1,8 +1,8 @@
 package com.rbc.rbcone.position.dashboard.service;
 
-import com.rbc.rbcone.position.dashboard.model.NewsItem;
-
 import java.util.List;
+
+import com.rbc.rbcone.position.dashboard.model.NewsItem;
 
 /**
  * Created by wayneyu on 1/5/17.
@@ -10,6 +10,5 @@ import java.util.List;
 public interface NewsFeedService {
 
     public List<NewsItem> getNews(String keyword, String country, long sinceTimeMillis) throws Exception;
-
-    public String fakeNews();
+    
 }
