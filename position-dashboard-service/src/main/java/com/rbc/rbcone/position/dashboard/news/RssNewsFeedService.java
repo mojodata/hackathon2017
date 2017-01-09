@@ -32,14 +32,12 @@ public class RssNewsFeedService {
 		List<NewsItem> newsItems = new ArrayList<>();
 		for (NewsFeedSource source : sources.getSources()) {
 			try {
-				String news = fetchRssFeed(sessionState, source);
-				LOGGER.info(news);
-				feedParser.parseRssFeed(news, source.getName(), newsItems);
-				newsItems = filterOldNews(sessionState, newsItems);
+				feedParser.parseRssFeed(fetchRssFeed(sessionState, source), source.getName(), newsItems);
 			} catch (FeedException | IOException e) {
 				LOGGER.error("Failed to get news from " + source.getName(), e);
 			}
 		}
+		newsItems = filterOldNews(sessionState, newsItems);
 		return newsItems;
 	}
 
