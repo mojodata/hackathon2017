@@ -31,8 +31,6 @@ public class NewsFeedServiceImpl implements NewsFeedService {
     private static final String URL = "https://webhose.io/search";
     private static final String QUERY = "token=%s&format=json&q=%s language:(english)&ts=%d";
     
-    private int counter;
-
     @Override
     public List<NewsItem> getNews(String keyword, long sinceTimeMillis) {
         String query = String.format(QUERY, TOKEN, keyword, sinceTimeMillis);
@@ -49,7 +47,9 @@ public class NewsFeedServiceImpl implements NewsFeedService {
             logger.error("Error making http request.", ex);
         }
 
-        return getNewsItems(JsonPath.parse(jsonResponse));
+        DocumentContext documentContext = JsonPath.parse(jsonResponse);
+        logger.info("Requests left" + getFields(documentContext, "$..requestsLeft"));
+		return getNewsItems(documentContext);
     }
 
     List<String> getTitles(DocumentContext documentContext) {
