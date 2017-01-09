@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,36 +31,41 @@ public class RssNewsFeedService {
 	@Autowired
 	private RestOperations rssFeedFetcher;
 	
-	private String currentTopic;
-	private Date latestNewsDate;
+	private Map<String, RssSessionState> websocketSessionMap = new HashMap<>();
 	
-	public List<NewsItem> getRssNewsItem(String topic) {
+	public List<NewsItem> getRssNewsItem(String websocketId, String topic) {
 		LOGGER.info("Searching RSS feeds for " + topic);
-		updateCurrentTopic(topic);
+		updateCurrentTopic(websocketId, topic);
 		List<NewsItem> newsItems = new ArrayList<>();
 		try {
 			//String news = fetchNewsFromGoogle(topic);
 			String news = loadRssSample();
 			feedParser.parseRssFeed(news, "Google Finance", newsItems);
-			newsItems = filterOldNews(newsItems);
+			newsItems = filterOldNews(websocketId, newsItems);
 		} catch (FeedException | IOException e) {
 			e.printStackTrace();
 		}
 		return newsItems;
 	}
 	
-	private void updateCurrentTopic(String topic) {
-		if (!topic.equals(currentTopic)) {
-			currentTopic = topic;
-			latestNewsDate = null;
+	private void updateCurrentTopic(String websocketId, String topic) {
+		RssSessionState sessionState = websocketSessionMap.get(websocketId);
+		if (sessionState == null) {
+			sessionState = new RssSessionState();
+			websocketSessionMap.put(websocketId, sessionState);
+		}
+		if (!topic.equals(sessionState.getCurrentTopic())) {
+			sessionState.setCurrentTopic(topic);
+			sessionState.setLatestNewsDate(null);
 		}
 	}
 
-	private List<NewsItem> filterOldNews(List<NewsItem> newsItems) {
+	private List<NewsItem> filterOldNews(String websocketId, List<NewsItem> newsItems) {
+		RssSessionState sessionState = websocketSessionMap.get(websocketId);
 		List<NewsItem> filteredItems = new ArrayList<>();
 		for (NewsItem rssNewsItem : newsItems) {
-			if (latestNewsDate != null) {
-				if (rssNewsItem.getPublishedDate() != null && rssNewsItem.getPublishedDate().after(latestNewsDate)) {
+			if (sessionState.getLatestNewsDate() != null) {
+				if (rssNewsItem.getPublishedDate() != null && rssNewsItem.getPublishedDate().after(sessionState.getLatestNewsDate())) {
 					filteredItems.add(rssNewsItem);
 				}
 			} else {
@@ -67,9 +73,9 @@ public class RssNewsFeedService {
 			}
 		}
 		for (NewsItem rssNewsItem : newsItems) {
-			if (latestNewsDate == null || 
-						(rssNewsItem.getPublishedDate() != null && rssNewsItem.getPublishedDate().after(latestNewsDate))) {
-				latestNewsDate = rssNewsItem.getPublishedDate();
+			if (sessionState.getLatestNewsDate() == null || 
+						(rssNewsItem.getPublishedDate() != null && rssNewsItem.getPublishedDate().after(sessionState.getLatestNewsDate()))) {
+				sessionState.setLatestNewsDate(rssNewsItem.getPublishedDate());
 			}
 		}
 		return filteredItems;

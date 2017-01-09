@@ -34,14 +34,14 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 	
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		logger.info("WebSocket Connection Established");
+		logger.info("WebSocket Connection Established: " + session.getId());
 		newsSession = session;
 		currentTopic = null;
 	}
 	
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		logger.info("WebSocket Connection Closed");
+		logger.info("WebSocket Connection Closed: " + session.getId());
 		newsSession = null;
 		currentTopic = null;
 	}
@@ -60,7 +60,7 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 		List<NewsItem> newsItems = new ArrayList<>();
 //		newsItems.addAll(newsFeedService.getNews(topic, System.currentTimeMillis() - POLLING_RATE));
 //		List<NewsItem> newsItems = Arrays.asList(new NewsItem("title" + count, "http://www.google.com"), new NewsItem("title" + count++, "http://www.google.com"));
-		newsItems.addAll(rssNewsFeedService.getRssNewsItem(topic));
+		newsItems.addAll(rssNewsFeedService.getRssNewsItem(this.newsSession.getId(), topic));
 		logger.info("News items for topic: " + topic + " :" + newsItems);
 		return newsItems.isEmpty() ? null : new TextMessage(new JSONArray(newsItems).toString());
 	}
