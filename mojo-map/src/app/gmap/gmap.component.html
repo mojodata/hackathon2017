@@ -1,4 +1,8 @@
       <h3 class="total-market-value left-padding" *ngIf="accountDetail">Total Market Value: {{accountDetail.totalMarketValue | currency:'USD':true}}</h3>
+      <div *ngIf="accountDetail">
+        <app-color-bar [accountDetail]="accountDetail"></app-color-bar>
+        <br />
+      </div>
 			<sebm-google-map [latitude]="lat" [longitude]="lng" 
                       [zoom]="1" [zoomControl]="true"
                       [mapDraggable]="true" [backgroundColor]="'white'"

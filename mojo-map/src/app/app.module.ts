@@ -30,6 +30,7 @@ import * as nv from 'nvd3';
 // declare module 'nv' { let exportAs: any; export = exportAs; }
 
 import { nvD3 } from 'ng2-nvd3';
+import { ColorBarComponent } from './color-bar/color-bar.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { nvD3 } from 'ng2-nvd3';
     NewsFeedComponent,
     HoldingsTableComponent,
     nvD3,
-    DonutChartComponent
+    DonutChartComponent,
+    ColorBarComponent
   ],
   imports: [
     BrowserModule,

@@ -19,6 +19,7 @@ export class MapColorService {
 		'#749DFF'
 	*/
 
+/*
 		'#6AADE4',
 		'#0051A5',
 		'#B8A970',
@@ -31,6 +32,7 @@ export class MapColorService {
 		'#5D3566',
 		'#E486E4',
 		'#FFC0CB'
+*/
 
 /*
 		'#000512',
@@ -46,12 +48,27 @@ export class MapColorService {
 		'#EAF0FF',
 		'#EAF0FF'
 */
+
+		'#1258FF',
+		'#3A74FF',
+		'#4D81FF',
+		'#618FFF',
+		'#749DFF',
+		'#88ABFF',
+		'#9CB9FF',
+		'#AFC7FF',
+		'#D6E2FF',
+		'#EAF0FF'
 	];
 
   constructor() { }
 
   getColorCodeByRank(rank: number): string {
   	return this.rankColorMap[rank - 1];
+  }
+
+  getColorRankArray(): Array<string> {
+  	return this.rankColorMap;
   }
 
 }
