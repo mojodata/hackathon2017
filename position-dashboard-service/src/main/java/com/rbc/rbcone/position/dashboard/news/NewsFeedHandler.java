@@ -13,7 +13,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import com.rbc.rbcone.position.dashboard.model.RssNewsItem;
+import com.rbc.rbcone.position.dashboard.model.NewsItem;
 import com.rbc.rbcone.position.dashboard.service.NewsFeedService;
 
 public class NewsFeedHandler extends TextWebSocketHandler {
@@ -34,14 +34,14 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 	
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		System.out.println("Connection Established");
+		logger.info("WebSocket Connection Established");
 		newsSession = session;
 		currentTopic = null;
 	}
 	
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		System.out.println("Connection Closed");
+		logger.info("WebSocket Connection Closed");
 		newsSession = null;
 		currentTopic = null;
 	}
@@ -50,22 +50,28 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		logger.info("Message payload: " + message.getPayload());
 		currentTopic = message.getPayload();
-		session.sendMessage(getNewsMessage(currentTopic));
+		TextMessage newsMessage = getNewsMessage(currentTopic);
+		if (newsMessage != null) {
+			session.sendMessage(newsMessage);
+		}
 	}
 
 	private TextMessage getNewsMessage(String topic) {
 //		List<NewsItem> newsItems = newsFeedService.getNews(topic, System.currentTimeMillis() - refreshRate);
 //		List<NewsItem> newsItems = Arrays.asList(new NewsItem("title" + count, "http://www.google.com"), new NewsItem("title" + count++, "http://www.google.com"));
-		List<RssNewsItem> newsItems = rssNewsFeedService.getRssNewsItem(topic);
+		List<NewsItem> newsItems = rssNewsFeedService.getRssNewsItem(topic);
 		logger.info("News items for topic: " + topic + " :" + newsItems);
-		return new TextMessage(new JSONArray(newsItems).toString());
+		return newsItems.isEmpty() ? null : new TextMessage(new JSONArray(newsItems).toString());
 	}
 	
 	@Scheduled(fixedRate=POLLING_RATE)
 	public void checkForNews() {
 		if (newsSession != null && currentTopic != null) {
 			try {
-				newsSession.sendMessage(getNewsMessage(currentTopic));
+				TextMessage newsMessage = getNewsMessage(currentTopic);
+				if (newsMessage != null) {
+					newsSession.sendMessage(newsMessage);
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

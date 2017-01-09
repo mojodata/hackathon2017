@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 
 import org.springframework.stereotype.Component;
 
-import com.rbc.rbcone.position.dashboard.model.RssNewsItem;
+import com.rbc.rbcone.position.dashboard.model.NewsItem;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
@@ -19,13 +19,13 @@ final class RssFeedParser {
 	
 	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
-	void parseRssFeed(String rssNews, String source, List<RssNewsItem> newsItems) throws FeedException, IOException {
+	void parseRssFeed(String rssNews, String source, List<NewsItem> newsItems) throws FeedException, IOException {
 		SyndFeedInput input = new SyndFeedInput();
 		try (ByteArrayInputStream newsStream = new ByteArrayInputStream(removeDescriptions(rssNews).getBytes())) {
 			try (XmlReader xmlReader = new XmlReader(newsStream)) {
 				SyndFeed feed = input.build(xmlReader);
 				for (SyndEntry entry : feed.getEntries()) {
-					RssNewsItem newsItem = new RssNewsItem(normalizeTitle(entry.getTitle()), entry.getLink().trim());
+					NewsItem newsItem = new NewsItem(normalizeTitle(entry.getTitle()), entry.getLink().trim());
 					newsItem.setSource(source);
 					newsItem.setPublishedDate(entry.getPublishedDate());
 					newsItems.add(newsItem);

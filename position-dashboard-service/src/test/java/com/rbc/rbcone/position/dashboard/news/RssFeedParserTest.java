@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.rbc.rbcone.position.dashboard.model.RssNewsItem;
+import com.rbc.rbcone.position.dashboard.model.NewsItem;
 
 public class RssFeedParserTest {
 	
@@ -22,7 +22,7 @@ public class RssFeedParserTest {
 
 	@Test
 	public void testParseGoogleFinanceFeed() throws Exception {
-		List<RssNewsItem> newsItems = new ArrayList<>();
+		List<NewsItem> newsItems = new ArrayList<>();
 		
 		fixture.parseRssFeed(loadRssSample(), "Google", newsItems);
 		

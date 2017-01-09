@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestOperations;
 
-import com.rbc.rbcone.position.dashboard.model.RssNewsItem;
+import com.rbc.rbcone.position.dashboard.model.NewsItem;
 import com.rometools.rome.io.FeedException;
 
 @Service
@@ -29,19 +30,51 @@ public class RssNewsFeedService {
 	@Autowired
 	private RestOperations rssFeedFetcher;
 	
-	public List<RssNewsItem> getRssNewsItem(String topic) {
+	private String currentTopic;
+	private Date latestNewsDate;
+	
+	public List<NewsItem> getRssNewsItem(String topic) {
 		LOGGER.info("Searching RSS feeds for " + topic);
-		List<RssNewsItem> newsItems = new ArrayList<>();
+		updateCurrentTopic(topic);
+		List<NewsItem> newsItems = new ArrayList<>();
 		try {
 			//String news = fetchNewsFromGoogle(topic);
 			String news = loadRssSample();
 			feedParser.parseRssFeed(news, "Google Finance", newsItems);
+			newsItems = filterOldNews(newsItems);
 		} catch (FeedException | IOException e) {
 			e.printStackTrace();
 		}
 		return newsItems;
 	}
 	
+	private void updateCurrentTopic(String topic) {
+		if (!topic.equals(currentTopic)) {
+			currentTopic = topic;
+			latestNewsDate = null;
+		}
+	}
+
+	private List<NewsItem> filterOldNews(List<NewsItem> newsItems) {
+		List<NewsItem> filteredItems = new ArrayList<>();
+		for (NewsItem rssNewsItem : newsItems) {
+			if (latestNewsDate != null) {
+				if (rssNewsItem.getPublishedDate() != null && rssNewsItem.getPublishedDate().after(latestNewsDate)) {
+					filteredItems.add(rssNewsItem);
+				}
+			} else {
+				filteredItems.add(rssNewsItem);
+			}
+		}
+		for (NewsItem rssNewsItem : newsItems) {
+			if (latestNewsDate == null || 
+						(rssNewsItem.getPublishedDate() != null && rssNewsItem.getPublishedDate().after(latestNewsDate))) {
+				latestNewsDate = rssNewsItem.getPublishedDate();
+			}
+		}
+		return filteredItems;
+	}
+
 	private String fetchNewsFromGoogle(String topic) {
 		return rssFeedFetcher.getForObject(GOOGLE_RSS_URL_TEMPLATE, String.class, topic);
 	}

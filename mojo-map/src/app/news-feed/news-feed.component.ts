@@ -17,9 +17,8 @@ export class NewsFeedComponent implements OnInit, OnDestroy {
 			source: {
 				title: 'Source'
 			},
-			publishedDate: {
-				title: 'Published Date',
-                sortDirection: 'desc'
+			formattedPublishedDate: {
+				title: 'Published Date'
 			},
 			title: {
 				title: 'Title'
@@ -41,12 +40,9 @@ export class NewsFeedComponent implements OnInit, OnDestroy {
 
     constructor(private newsFeedService: NewsFeedService) { }
 
-    private newsItems: NewsFeedItem[];
-
     ngOnInit() {
         this.topic = 'Some topic';
-        this.newsItems = [];
-  		this.source = new LocalDataSource(this.newsItems);
+  		this.source = new LocalDataSource();
         this.newsFeedService
             .subscribeToNews(this.topic)
             .subscribe(
@@ -54,10 +50,9 @@ export class NewsFeedComponent implements OnInit, OnDestroy {
                     let items: NewsFeedItem[] = JSON.parse(newsItem.data);
                     items.forEach(item => {
                         item.url = '<a href="' + item.url + '">' + item.url + '</a>';
-                        console.log(item.url);
-                        this.newsItems.push(item);
+                        this.source.prepend(item);
                     });
-                    this.source = new LocalDataSource(this.newsItems);
+                    this.source.setSort([{ field: 'formattedPublishedDate', direction: 'desc' }]);
                 },
                 error => {
                     console.log('Error: ' + error.message); 
