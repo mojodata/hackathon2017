@@ -4,8 +4,9 @@
         <br />
       </div>
 			<sebm-google-map [latitude]="lat" [longitude]="lng" 
-                      [zoom]="1" [zoomControl]="true"
+                      [zoom]="2" [zoomControl]="true"
                       [mapDraggable]="true" [backgroundColor]="'white'"
+                      [fitBounds]="true"
       >
         <app-map-country [modal]="lgModal" [countries]="countries" (countryChange)="onCountryChange($event)"></app-map-country>  
 			</sebm-google-map>

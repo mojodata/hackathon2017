@@ -41,6 +41,10 @@ export class HoldingsTableComponent implements OnInit, OnChanges {
 			},
 			majorSecurityType: {
 				title: 'Major Security Type'
+			},
+			newsFeed: {
+				title: 'Add to News Feed?',
+				filter: false
 			}
 		},
 		editable: false,
