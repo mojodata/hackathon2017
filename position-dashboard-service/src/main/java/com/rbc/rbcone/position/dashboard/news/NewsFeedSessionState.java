@@ -20,7 +20,9 @@ class NewsFeedSessionState {
 	}
 
 	void setCurrentTopic(String currentTopic) {
-		if (this.currentTopic != null && !this.currentTopic.equals(currentTopic)) {
+		if (this.currentTopic == null) {
+			this.currentTopic = currentTopic;
+		} else if (this.currentTopic != null && !this.currentTopic.equals(currentTopic)) {
 			this.previousTopic = this.currentTopic;
 			this.currentTopic = currentTopic;
 			this.latestNewsDate = null;
