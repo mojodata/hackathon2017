@@ -37,7 +37,7 @@ public class AccountServiceImpl implements AccountService {
 	
 	@Override
 	public List<AccountDTO> getUserAccounts() {
-		List<Account> accounts = accountRepository.findAll();
+		List<Account> accounts = accountRepository.findAllByOrderByAccountNameAsc();
 		
 		List<AccountDTO> accountDTOs = new ArrayList<>();
 		accountDTOs.add(new AccountDTO(ALL_ACCOUNTS, "All Accounts"));
