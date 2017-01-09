@@ -45,6 +45,11 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 		logger.info("WebSocket Connection Closed: " + session.getId());
 		sessionIdToStateMap.remove(session.getId());
 	}
+	
+	@Override
+	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+		logger.error("Transport error", exception);
+	}
 
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -80,7 +85,7 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 						state.getSession().sendMessage(newsMessage);
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error("Failed to get news", e);
 				}
 			}
 		}
