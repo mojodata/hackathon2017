@@ -4,9 +4,6 @@ import { LocalDataSource } from 'ng2-smart-table';
 
 import { NewsFeedItem } from './news-feed-item';
 import { NewsFeedService } from './news-feed.service';
-import { MockNewsFeedService } from './news-feed-mock.service';
-
-import NewsItem from '../dto/newsItem.dto';
 
 @Component({
     selector: 'news-feed',
@@ -14,24 +11,20 @@ import NewsItem from '../dto/newsItem.dto';
 })
 export class NewsFeedComponent implements OnInit, OnDestroy {
 
-<<<<<<< HEAD
-    private static readonly MAX_NEWS_ITEMS = 10;
-
     topic: string;
-    newsItems: NewsFeedItem[];
 	settings = {
 		columns: {
 			source: {
 				title: 'Source'
 			},
-			timestamp: {
-				title: 'Timestamp',
+			publishedDate: {
+				title: 'Published Date',
                 sortDirection: 'desc'
 			},
-			summary: {
-				title: 'Summary'
+			title: {
+				title: 'Title'
 			},
-			link: {
+			url: {
 				title: 'Link',
                 type: 'html'
 			}
@@ -45,44 +38,37 @@ export class NewsFeedComponent implements OnInit, OnDestroy {
 	};
 
 	source: LocalDataSource;
-=======
-    topic: string;
->>>>>>> refs/remotes/origin/master
 
     constructor(private newsFeedService: NewsFeedService) { }
 
-    private newsItems: NewsItem[];
+    private newsItems: NewsFeedItem[];
 
     ngOnInit() {
-<<<<<<< HEAD
         this.topic = 'Some topic';
         this.newsItems = [];
-		this.newsItems = MockNewsFeedService.getFakeNewsItems();
   		this.source = new LocalDataSource(this.newsItems);
-        // this.newsFeedService
-        //     .subscribeToNews(this.topic)
-        //     .subscribe(
-        //         newsItem => {
-        //             this.newsItems.push(newsItem.data);
-        //         },
-        //         error => {
-        //             console.log('Error: ' + error.message); 
-        //         },
-        //         () => {
-        //             console.log('Completed');
-        //         }
-        //     );
-=======
-        this.topic = 'Canada';
-        let subscription = this.newsFeedService.subscribeToNews(this.topic).subscribe(
-          res => this.newsItems = JSON.parse(res.data),
-          e => { console.log('Error: ' + e.message); },
-          () => { console.log('Completed'); }
-        );
->>>>>>> refs/remotes/origin/master
+        this.newsFeedService
+            .subscribeToNews(this.topic)
+            .subscribe(
+                newsItem => {
+                    let items: NewsFeedItem[] = JSON.parse(newsItem.data);
+                    items.forEach(item => {
+                        item.url = '<a href="' + item.url + '">' + item.url + '</a>';
+                        console.log(item.url);
+                        this.newsItems.push(item);
+                    });
+                    this.source = new LocalDataSource(this.newsItems);
+                },
+                error => {
+                    console.log('Error: ' + error.message); 
+                },
+                () => {
+                    console.log('Completed');
+                }
+            );
     }
 
     ngOnDestroy() {
-        // this.newsFeedService.closeFeed();
+        this.newsFeedService.closeFeed();
     }
 }

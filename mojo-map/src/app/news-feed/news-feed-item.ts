@@ -1,6 +1,6 @@
 export class NewsFeedItem {
     source: string;
-    timestamp: string;
-    summary: string;
-    link: string;
+    publishedDate: string;
+    title: string;
+    url: string;
 }
