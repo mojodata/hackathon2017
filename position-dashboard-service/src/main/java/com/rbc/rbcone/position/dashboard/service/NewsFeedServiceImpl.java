@@ -47,9 +47,7 @@ public class NewsFeedServiceImpl implements NewsFeedService {
             logger.error("Error making http request.", ex);
         }
 
-        DocumentContext documentContext = JsonPath.parse(jsonResponse);
-        logger.info("Requests left" + getFields(documentContext, "$..requestsLeft"));
-		return getNewsItems(documentContext);
+        return getNewsItems(JsonPath.parse(jsonResponse));
     }
 
     List<String> getTitles(DocumentContext documentContext) {
@@ -77,6 +75,7 @@ public class NewsFeedServiceImpl implements NewsFeedService {
         List<String> titles = getTitles(documentContext);
         List<String> publishDates = getPublishDates(documentContext);
         List<NewsItem> items = new ArrayList<>();
+        logger.info("Requests left: " + documentContext.read("$..requestsLeft"));
 
         for(int i = 0; i < titles.size(); i++) {
             NewsItem newsItem = new NewsItem(titles.get(i), urls.get(i));
