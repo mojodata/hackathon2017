@@ -1,6 +1,6 @@
 package com.rbc.rbcone.position.dashboard.news;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -56,10 +56,11 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 		}
 	}
 
-	private TextMessage getNewsMessage(String topic) {
-//		List<NewsItem> newsItems = newsFeedService.getNews(topic, System.currentTimeMillis() - refreshRate);
+	private TextMessage getNewsMessage(String topic) throws Exception {
+		List<NewsItem> newsItems = new ArrayList<>();
+//		newsItems.addAll(newsFeedService.getNews(topic, System.currentTimeMillis() - POLLING_RATE));
 //		List<NewsItem> newsItems = Arrays.asList(new NewsItem("title" + count, "http://www.google.com"), new NewsItem("title" + count++, "http://www.google.com"));
-		List<NewsItem> newsItems = rssNewsFeedService.getRssNewsItem(topic);
+		newsItems.addAll(rssNewsFeedService.getRssNewsItem(topic));
 		logger.info("News items for topic: " + topic + " :" + newsItems);
 		return newsItems.isEmpty() ? null : new TextMessage(new JSONArray(newsItems).toString());
 	}
@@ -72,7 +73,7 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 				if (newsMessage != null) {
 					newsSession.sendMessage(newsMessage);
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

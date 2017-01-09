@@ -1,5 +1,7 @@
 package com.rbc.rbcone.position.dashboard.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,9 +24,9 @@ import net.minidev.json.JSONArray;
 @Service
 public class NewsFeedServiceImpl implements NewsFeedService {
 
-
-    private static final Logger logger = LoggerFactory.getLogger(NewsFeedServiceImpl.class);
-
+	private static final Logger logger = LoggerFactory.getLogger(NewsFeedServiceImpl.class);
+	
+	private static final SimpleDateFormat PUBLISH_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
     private static final String TOKEN = "92a7d45d-7beb-4f01-ba0f-0bb953ec7f93";
     private static final String URL = "https://webhose.io/search";
     private static final String QUERY = "token=%s&format=json&q=%s language:(english)&ts=%d";
@@ -58,6 +60,10 @@ public class NewsFeedServiceImpl implements NewsFeedService {
         return getFields(documentContext, "$..thread.url");
     }
 
+    List<String> getPublishDates(DocumentContext documentContext) {
+        return getFields(documentContext, "$..thread.published");
+    }
+
     private List<String> getFields(DocumentContext documentContext, String jsonPath) {
         List<String> fields = new ArrayList<>();
         for (Object field : documentContext.<JSONArray>read(jsonPath)) {
@@ -69,10 +75,18 @@ public class NewsFeedServiceImpl implements NewsFeedService {
     List<NewsItem> getNewsItems(DocumentContext documentContext) {
         List<String> urls = getUrls(documentContext);
         List<String> titles = getTitles(documentContext);
+        List<String> publishDates = getPublishDates(documentContext);
         List<NewsItem> items = new ArrayList<>();
 
         for(int i = 0; i < titles.size(); i++) {
-            items.add(new NewsItem(titles.get(i), urls.get(i)));
+            NewsItem newsItem = new NewsItem(titles.get(i), urls.get(i));
+            newsItem.setSource("webhose.io");
+            try {
+				newsItem.setPublishedDate(PUBLISH_DATE_FORMAT.parse(publishDates.get(i)));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			items.add(newsItem);
         }
 
         return items;
