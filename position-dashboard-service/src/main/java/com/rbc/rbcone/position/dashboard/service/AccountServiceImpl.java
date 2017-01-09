@@ -1,8 +1,13 @@
 package com.rbc.rbcone.position.dashboard.service;
 
 import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collector;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,7 +135,7 @@ public class AccountServiceImpl implements AccountService {
 					countryMarketValueDTO.setTotalMarketValue(countryMarketValueDTO.getTotalMarketValue().add(marketBaseValue));
 					map.put(countryOfIssuer, countryMarketValueDTO);
 				} else {
-					CountryMarketValueDTO countryMarketValueDTO = new CountryMarketValueDTO(marketBaseValue, 0, countryOfIssuer);
+					CountryMarketValueDTO countryMarketValueDTO = new CountryMarketValueDTO(marketBaseValue, 0, countryOfIssuer, "");
 					map.put(countryOfIssuer, countryMarketValueDTO);
 				}
 			}
@@ -149,13 +154,20 @@ public class AccountServiceImpl implements AccountService {
 			CountryMarketValueDTO countryMarketValueDTO = map.get(dto.getCountryCode());
 			countryMarketValueDTO.setRank(rank);
 			if (rank < SCALE_SIZE) {
+				countryMarketValueDTO.setRankDescription("" + formatCurrency(values.get(rank-1).getTotalMarketValue()));
 				rank++;
+			} else {
+				countryMarketValueDTO.setRankDescription("Less than:" + formatCurrency(values.get(rank-1).getTotalMarketValue()));
 			}
 		}
 		
 		return map;
 	}
 
+
+	private String formatCurrency(BigDecimal totalMarketValue) {
+		return NumberFormat.getCurrencyInstance().format(totalMarketValue);
+	}
 
 	private BigDecimal getHoldingValue(BigDecimal marketBaseValue) {
 		return marketBaseValue != null ? marketBaseValue : new BigDecimal(ZERO);
