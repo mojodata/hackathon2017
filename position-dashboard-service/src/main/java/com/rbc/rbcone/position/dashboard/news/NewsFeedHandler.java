@@ -1,6 +1,9 @@
 package com.rbc.rbcone.position.dashboard.news;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.slf4j.Logger;
@@ -56,7 +59,7 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 
 	private TextMessage getNewsMessage(NewsFeedSessionState sessionState) throws Exception {
 		List<NewsItem> newsItems = new ArrayList<>();
-		newsItems.addAll(newsFeedService.getNews(sessionState.getCurrentTopic(), System.currentTimeMillis() - POLLING_RATE));
+//		newsItems.addAll(newsFeedService.getNews(sessionState.getCurrentTopic(), System.currentTimeMillis() - POLLING_RATE));
 		newsItems.addAll(rssNewsFeedService.getRssNewsItem(sessionState));
 //		NewsItem item = new NewsItem("Title1", "http://www.google.com");
 //		item.setSource("");
