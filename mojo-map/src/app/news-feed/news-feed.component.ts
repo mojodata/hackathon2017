@@ -41,7 +41,7 @@ export class NewsFeedComponent implements OnInit, OnDestroy {
     constructor(private newsFeedService: NewsFeedService) { }
 
     ngOnInit() {
-        this.topic = 'IBM';
+        this.topic = 'HSBC';
   		this.source = new LocalDataSource();
         this.newsFeedService
             .subscribeToNews(this.topic)
