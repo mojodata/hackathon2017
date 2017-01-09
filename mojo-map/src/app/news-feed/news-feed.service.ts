@@ -9,7 +9,7 @@ import NewsItem from '../dto/newsItem.dto';
 @Injectable()
 export class NewsFeedService {
 
-    private static readonly NEWS_FEED_URL: string = 'ws://position-dashboard-service.mybluemix.net:8089/newsfeed';
+    private static readonly NEWS_FEED_URL: string = 'ws://position-dashboard-service.mybluemix.net/newsfeed';
     //'ws://localhost:8089/newsfeed';
 
     private newsFeedSocket: $WebSocket;
