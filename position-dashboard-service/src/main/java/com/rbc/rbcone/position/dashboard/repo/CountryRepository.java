@@ -19,12 +19,17 @@ import net.minidev.json.JSONArray;
 @Repository
 public class CountryRepository {
 	
+	private static final String POINT = "Point";
+	private static final String POLYGON = "Polygon";
 	private final Map<String, List<Region>> countryCodeToRegionMap = new HashMap<>();
+	private final Map<String, Coordinate> countryCodeToPointMap = new HashMap<>();
 	
 	
 	public CountryRepository() {
 		DocumentContext documentContext = JsonPath.parse(getClass().getResourceAsStream("/countries_world.json"));
-		loadRegions(documentContext, loadCountries(documentContext));
+		List<String> countries = loadCountries(documentContext);
+		loadRegions(documentContext, countries);
+		loadPoints(documentContext, countries);
 	}
 
 	private List<String> loadCountries(DocumentContext documentContext) {
@@ -34,6 +39,7 @@ public class CountryRepository {
 			String countryCode = countryDescription.substring(7, 9);
 			countryCodes.add(countryCode);
 			countryCodeToRegionMap.put(countryCode, new ArrayList<>());
+			countryCodeToPointMap.put(countryCode, new Coordinate());
 		}
 		return countryCodes;
 	}
@@ -45,8 +51,23 @@ public class CountryRepository {
 				List<Region> regions = countryCodeToRegionMap.get(countryCodes.get(countryIndex));
 				@SuppressWarnings("unchecked")
 				Map<String, JSONArray> geometryMap = (Map<String, JSONArray>) geometryObject;
-				if ("Polygon".equals(geometryMap.get("type"))) {
+				if (POLYGON.equals(geometryMap.get("type"))) {
 					loadRegion(regions, geometryMap);
+				}
+			}
+			countryIndex++;
+		}
+	}
+
+	private void loadPoints(DocumentContext documentContext, List<String> countryCodes) {
+		int countryIndex = 0;
+		for (Object geometriesObject : documentContext.<JSONArray>read("$..geometries")) {
+			for (Object geometryObject : (JSONArray) geometriesObject) {
+				Coordinate coordinate = countryCodeToPointMap.get(countryCodes.get(countryIndex));
+				@SuppressWarnings("unchecked")
+				Map<String, JSONArray> geometryMap = (Map<String, JSONArray>) geometryObject;
+				if (POINT.equals(geometryMap.get("type"))) {
+					loadPoint(coordinate, geometryMap);
 				}
 			}
 			countryIndex++;
@@ -69,7 +90,17 @@ public class CountryRepository {
 		regions.add(region);
 	}
 
+	private void loadPoint(Coordinate coordinate, Map<String, JSONArray> geometryMap) {
+		JSONArray coordinates = (JSONArray) geometryMap.get("coordinates");
+		coordinate.setLng(new BigDecimal((coordinates.get(0)).toString()));
+		coordinate.setLat(new BigDecimal((coordinates.get(1)).toString()));
+	}
+
 	public List<Region> getRegionsForCountry(String countryCode) {
 		return countryCodeToRegionMap.containsKey(countryCode) ? countryCodeToRegionMap.get(countryCode) : Collections.emptyList();
+	}
+
+	public Coordinate getCountryPoints(String countryCode) {
+		return countryCodeToPointMap.containsKey(countryCode) ? countryCodeToPointMap.get(countryCode) : new Coordinate();
 	}
 }

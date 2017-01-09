@@ -53,4 +53,11 @@ public class DashBoardRestController {
 		return regions;
 	}
 
+	@GetMapping(path="points/{countryCode}", produces=MediaType.APPLICATION_JSON_VALUE)
+	public Coordinate getCountryPoints(@PathVariable(name="countryCode") String countryCode) {
+		Coordinate coordinate = countryService.getCountryPoints(countryCode);
+
+		return coordinate;
+	}
+
 }
