@@ -22,7 +22,7 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(NewsFeedHandler.class);
 	
-	private static final long POLLING_RATE = 3600000;
+	private static final long POLLING_RATE = 60000;
 	
 	@Autowired
 	private NewsFeedService newsFeedService;
