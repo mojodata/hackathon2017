@@ -6,7 +6,7 @@
 			<sebm-google-map [latitude]="lat" [longitude]="lng" 
                       [zoom]="2" [zoomControl]="true"
                       [mapDraggable]="true" [backgroundColor]="'white'"
-                      [fitBounds]="true"
+                      [fitBounds]="true" [scrollwheel]="false"
       >
         <app-map-country [modal]="lgModal" [countries]="countries" (countryChange)="onCountryChange($event)"></app-map-country>  
 			</sebm-google-map>
