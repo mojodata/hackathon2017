@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=Oracle;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.OracleDialect
+
+server:
+  port: 8089
+
+newsfeed:
+  sources:
+    - name: Google Finance
+      url: http://www.google.ca/finance/company_news?q={topic}&output=rss
+    - name: CNN Money Markets
+      url: http://rss.cnn.com/rss/money_markets.rss
+    - name: CNN Money Funds
+      url: http://rss.cnn.com/rss/money_funds.rss
+    - name: CNN Company News
+      url: http://rss.cnn.com/rss/money_news_companies.rss
+    - name: Reuters
+      url: http://feeds.reuters.com/reuters/businessNews?format=xml
+    - name: CBC
+      url: http://rss.cbc.ca/lineup/business.xml

@@ -1,8 +1,6 @@
 package com.rbc.rbcone.position.dashboard.news;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +18,8 @@ public class RssNewsFeedService {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(RssNewsFeedService.class);
 	
-	private static final String GOOGLE_RSS_URL_TEMPLATE = "http://www.google.ca/finance/company_news?q={topic}&output=rss";
-	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+	@Autowired
+	private NewsFeedSources sources;
 	
 	@Autowired
 	private RssFeedParser feedParser;
@@ -32,15 +30,22 @@ public class RssNewsFeedService {
 	public List<NewsItem> getRssNewsItem(NewsFeedSessionState sessionState) {
 		LOGGER.info("Searching RSS feeds for " + sessionState.getCurrentTopic());
 		List<NewsItem> newsItems = new ArrayList<>();
-		try {
-			String news = fetchNewsFromGoogle(sessionState.getCurrentTopic());
-			//String news = loadRssSample();
-			feedParser.parseRssFeed(news, "Google Finance", newsItems);
-			newsItems = filterOldNews(sessionState, newsItems);
-		} catch (FeedException | IOException e) {
-			e.printStackTrace();
+		for (NewsFeedSource source : sources.getSources()) {
+			try {
+				feedParser.parseRssFeed(fetchRssFeed(sessionState, source), source.getName(), newsItems);
+			} catch (FeedException | IOException e) {
+				LOGGER.error("Failed to get news from " + source.getName(), e);
+			}
 		}
+		newsItems = filterOldNews(sessionState, newsItems);
 		return newsItems;
+	}
+
+	private String fetchRssFeed(NewsFeedSessionState sessionState, NewsFeedSource source) {
+		LOGGER.info("Fetching news for source " + source.getName());
+		return source.getUrl().indexOf("{topic}") >=0 ?
+				rssFeedFetcher.getForObject(source.getUrl(), String.class, sessionState.getCurrentTopic()) :
+					rssFeedFetcher.getForObject(source.getUrl(), String.class);
 	}
 
 	private List<NewsItem> filterOldNews(NewsFeedSessionState sessionState, List<NewsItem> newsItems) {
@@ -61,22 +66,5 @@ public class RssNewsFeedService {
 			}
 		}
 		return filteredItems;
-	}
-
-	private String fetchNewsFromGoogle(String topic) {
-		return rssFeedFetcher.getForObject(GOOGLE_RSS_URL_TEMPLATE, String.class, topic);
-	}
-	
-	private String loadRssSample() throws IOException {
-		StringBuilder rssFeed = new StringBuilder();
-		try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(getClass().getResourceAsStream("/google-stock.xml")))) {
-			String line = reader.readLine();
-			while (line != null) {
-				rssFeed.append(line);
-				rssFeed.append(LINE_SEPARATOR);
-				line = reader.readLine();
-			}
-		}
-		return rssFeed.toString();
 	}
 }

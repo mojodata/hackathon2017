@@ -22,7 +22,7 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(NewsFeedHandler.class);
 	
-	private static final long POLLING_RATE = 3600000;
+	private static final long POLLING_RATE = 60000;
 	
 	@Autowired
 	private NewsFeedService newsFeedService;
@@ -45,6 +45,11 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 		logger.info("WebSocket Connection Closed: " + session.getId());
 		sessionIdToStateMap.remove(session.getId());
 	}
+	
+	@Override
+	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+		logger.error("Transport error", exception);
+	}
 
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -59,8 +64,12 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 
 	private TextMessage getNewsMessage(NewsFeedSessionState sessionState) throws Exception {
 		List<NewsItem> newsItems = new ArrayList<>();
-		newsItems.addAll(newsFeedService.getNews(sessionState.getCurrentTopic(), System.currentTimeMillis() - POLLING_RATE));
+//		newsItems.addAll(newsFeedService.getNews(sessionState.getCurrentTopic(), System.currentTimeMillis() - POLLING_RATE));
 		newsItems.addAll(rssNewsFeedService.getRssNewsItem(sessionState));
+//		NewsItem item = new NewsItem("Title1", "http://www.google.com");
+//		item.setSource("");
+//		item.setPublishedDate(new Date());
+//		newsItems.add(item);
 		logger.info("News items for topic: " + sessionState.getCurrentTopic() + " :" + newsItems.size());
 		return newsItems.isEmpty() ? null : new TextMessage(new JSONArray(newsItems).toString());
 	}
@@ -76,7 +85,7 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 						state.getSession().sendMessage(newsMessage);
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error("Failed to get news", e);
 				}
 			}
 		}

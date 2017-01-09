@@ -35,6 +35,13 @@ export class AccountService {
 
   private extractHoldings(res: Response) {
     let body = res.json();
+    if (body && body.holdings) {
+      let holdings: any[] = body.holdings;
+      holdings.forEach(holding => {
+          holding.newsFeed = false;
+      });
+
+    }
     return body || {};
   }
 

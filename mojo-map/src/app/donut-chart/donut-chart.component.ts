@@ -40,6 +40,7 @@ export class DonutChartComponent implements OnInit, OnChanges {
   				startAngle: d => (d.startAngle - Math.PI) * this.donutRatio, 
   				endAngle: d => (d.endAngle - Math.PI) * this.donutRatio 
   			},
+        labelType: "percent",
   			duration: 500,
   			legend: {
   				margin: {

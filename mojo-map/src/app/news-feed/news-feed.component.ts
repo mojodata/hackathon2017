@@ -20,11 +20,8 @@ export class NewsFeedComponent implements OnInit, OnDestroy {
 			formattedPublishedDate: {
 				title: 'Published Date'
 			},
-			title: {
-				title: 'Title'
-			},
 			url: {
-				title: 'Link',
+				title: 'Title',
                 type: 'html'
 			}
 		},
@@ -49,7 +46,7 @@ export class NewsFeedComponent implements OnInit, OnDestroy {
                 newsItem => {
                     let items: NewsFeedItem[] = JSON.parse(newsItem.data);
                     items.forEach(item => {
-                        item.url = '<a href="' + item.url + '">' + item.url + '</a>';
+                        item.url = '<a href="' + item.url + '" target="_blank">' + item.title + '</a>';
                         this.source.prepend(item);
                     });
                     this.source.setSort([{ field: 'formattedPublishedDate', direction: 'desc' }]);

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Input } from '@angular/core';
 import { OnChanges, SimpleChanges } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { LocalDataSource } from 'ng2-smart-table';
 
 @Component({
@@ -41,6 +42,14 @@ export class HoldingsTableComponent implements OnInit, OnChanges {
 			},
 			majorSecurityType: {
 				title: 'Major Security Type'
+			},
+			newsFeed: {
+				title: 'Add to News Feed?',
+				type: 'html',
+				filter: false,
+				valuePrepareFunction: (value) => {
+					return this.sanitizer.bypassSecurityTrustHtml(`<form><input type="checkbox" name="newsFeed" [(ngModel)]="newsFeed"></form>`);
+				}
 			}
 		},
 		editable: false,
@@ -53,7 +62,7 @@ export class HoldingsTableComponent implements OnInit, OnChanges {
 
 	source: LocalDataSource;
 
-  constructor() {
+  constructor(private sanitizer: DomSanitizer) {
   }
 
   ngOnInit() {
@@ -63,6 +72,14 @@ export class HoldingsTableComponent implements OnInit, OnChanges {
     if (changes['data'].currentValue) {
   		this.source = new LocalDataSource(this.data);
     }
+  }
+
+  toggleNewsFeed(event: any) {
+	  if (event.data.newsFeed) {
+		  event.data.newsFeed = false;
+	  } else {
+		  event.data.newsFeed = true;
+	  }
   }
 
   onSearch(query: string = ''): void {
