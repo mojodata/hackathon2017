@@ -20,6 +20,8 @@ export class DonutChartComponent implements OnInit, OnChanges {
 	options: any;
 	data: any;
 
+  donutRatio = 0.9;
+
   constructor() {
 
   }
@@ -30,13 +32,13 @@ export class DonutChartComponent implements OnInit, OnChanges {
   			type: 'pieChart',
         height: 900,
   			donut: true,
-        donutRatio: 0.9,
+        donutRatio: 0.5,
   			x: function(d) {return d.label;},
   			y: function(d) {return d.value;},
   			showLabels: true,
   			pie: {
-  				startAngle: d => (d.startAngle - Math.PI) * 0.75,
-  				endAngle: d => (d.endAngle - Math.PI) * 0.75
+  				startAngle: d => (d.startAngle - Math.PI) * this.donutRatio, 
+  				endAngle: d => (d.endAngle - Math.PI) * this.donutRatio 
   			},
   			duration: 500,
   			legend: {
