@@ -38,8 +38,8 @@ public class RssNewsFeedService {
 		updateCurrentTopic(websocketId, topic);
 		List<NewsItem> newsItems = new ArrayList<>();
 		try {
-			//String news = fetchNewsFromGoogle(topic);
-			String news = loadRssSample();
+			String news = fetchNewsFromGoogle(topic);
+			//String news = loadRssSample();
 			feedParser.parseRssFeed(news, "Google Finance", newsItems);
 			newsItems = filterOldNews(websocketId, newsItems);
 		} catch (FeedException | IOException e) {
