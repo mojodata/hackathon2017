@@ -61,7 +61,7 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 		List<NewsItem> newsItems = new ArrayList<>();
 		newsItems.addAll(newsFeedService.getNews(sessionState.getCurrentTopic(), System.currentTimeMillis() - POLLING_RATE));
 		newsItems.addAll(rssNewsFeedService.getRssNewsItem(sessionState));
-		logger.info("News items for topic: " + sessionState.getCurrentTopic() + " :" + newsItems);
+		logger.info("News items for topic: " + sessionState.getCurrentTopic() + " :" + newsItems.size());
 		return newsItems.isEmpty() ? null : new TextMessage(new JSONArray(newsItems).toString());
 	}
 	
