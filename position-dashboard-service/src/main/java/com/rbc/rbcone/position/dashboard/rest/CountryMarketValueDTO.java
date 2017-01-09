@@ -9,12 +9,14 @@ public class CountryMarketValueDTO implements Serializable, Comparable<CountryMa
 	private BigDecimal totalMarketValue;
 	private String countryCode;
 	private int rank;
+	private String rankDescription;
 
-	public CountryMarketValueDTO(BigDecimal totalMarketValue, int rank, String countryCode) {
+	public CountryMarketValueDTO(BigDecimal totalMarketValue, int rank, String countryCode, String rankDescription) {
 		super();
 		this.totalMarketValue = totalMarketValue;
 		this.countryCode = countryCode;
 		this.rank = rank;
+		this.rankDescription = rankDescription;
 	}
 
 	public BigDecimal getTotalMarketValue() {
@@ -47,5 +49,13 @@ public class CountryMarketValueDTO implements Serializable, Comparable<CountryMa
 
 	public void setCountryCode(String countryCode) {
 		this.countryCode = countryCode;
+	}
+
+	public String getRankDescription() {
+		return rankDescription;
+	}
+
+	public void setRankDescription(String rankDescription) {
+		this.rankDescription = rankDescription;
 	}
 }

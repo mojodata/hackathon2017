@@ -31,8 +31,6 @@ public class NewsFeedServiceImpl implements NewsFeedService {
     private static final String URL = "https://webhose.io/search";
     private static final String QUERY = "token=%s&format=json&q=%s language:(english)&ts=%d";
     
-    private int counter;
-
     @Override
     public List<NewsItem> getNews(String keyword, long sinceTimeMillis) {
         String query = String.format(QUERY, TOKEN, keyword, sinceTimeMillis);
@@ -77,6 +75,7 @@ public class NewsFeedServiceImpl implements NewsFeedService {
         List<String> titles = getTitles(documentContext);
         List<String> publishDates = getPublishDates(documentContext);
         List<NewsItem> items = new ArrayList<>();
+        logger.info("Requests left: " + documentContext.read("$..requestsLeft"));
 
         for(int i = 0; i < titles.size(); i++) {
             NewsItem newsItem = new NewsItem(titles.get(i), urls.get(i));

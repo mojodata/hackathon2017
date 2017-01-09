@@ -1,7 +1,9 @@
 package com.rbc.rbcone.position.dashboard.news;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.slf4j.Logger;
@@ -20,61 +22,62 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(NewsFeedHandler.class);
 	
-	private static final long POLLING_RATE = 60000;
+	private static final long POLLING_RATE = 3600000;
 	
 	@Autowired
 	private NewsFeedService newsFeedService;
 	
 	@Autowired
 	private RssNewsFeedService rssNewsFeedService;
-	
-	private WebSocketSession newsSession;
-	private String currentTopic;
-	private int count;
+
+	private Map<String, NewsFeedSessionState> sessionIdToStateMap = new HashMap<>();
 	
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		logger.info("WebSocket Connection Established: " + session.getId());
-		newsSession = session;
-		currentTopic = null;
+		NewsFeedSessionState state = new NewsFeedSessionState();
+		state.setSession(session);
+		sessionIdToStateMap.put(session.getId(), state);
 	}
 	
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		logger.info("WebSocket Connection Closed: " + session.getId());
-		newsSession = null;
-		currentTopic = null;
+		sessionIdToStateMap.remove(session.getId());
 	}
 
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		logger.info("Message payload: " + message.getPayload());
-		currentTopic = message.getPayload();
-		TextMessage newsMessage = getNewsMessage(currentTopic);
+		NewsFeedSessionState sessionState = sessionIdToStateMap.get(session.getId());
+		sessionState.setCurrentTopic(message.getPayload());
+		TextMessage newsMessage = getNewsMessage(sessionState);
 		if (newsMessage != null) {
 			session.sendMessage(newsMessage);
 		}
 	}
 
-	private TextMessage getNewsMessage(String topic) throws Exception {
+	private TextMessage getNewsMessage(NewsFeedSessionState sessionState) throws Exception {
 		List<NewsItem> newsItems = new ArrayList<>();
-//		newsItems.addAll(newsFeedService.getNews(topic, System.currentTimeMillis() - POLLING_RATE));
-//		List<NewsItem> newsItems = Arrays.asList(new NewsItem("title" + count, "http://www.google.com"), new NewsItem("title" + count++, "http://www.google.com"));
-		newsItems.addAll(rssNewsFeedService.getRssNewsItem(this.newsSession.getId(), topic));
-		logger.info("News items for topic: " + topic + " :" + newsItems);
+		newsItems.addAll(newsFeedService.getNews(sessionState.getCurrentTopic(), System.currentTimeMillis() - POLLING_RATE));
+		newsItems.addAll(rssNewsFeedService.getRssNewsItem(sessionState));
+		logger.info("News items for topic: " + sessionState.getCurrentTopic() + " :" + newsItems.size());
 		return newsItems.isEmpty() ? null : new TextMessage(new JSONArray(newsItems).toString());
 	}
 	
 	@Scheduled(fixedRate=POLLING_RATE)
 	public void checkForNews() {
-		if (newsSession != null && currentTopic != null) {
-			try {
-				TextMessage newsMessage = getNewsMessage(currentTopic);
-				if (newsMessage != null) {
-					newsSession.sendMessage(newsMessage);
+		for (String sessionId : sessionIdToStateMap.keySet()) {
+			NewsFeedSessionState state = sessionIdToStateMap.get(sessionId);
+			if (state != null && state.getCurrentTopic() != null) {
+				try {
+					TextMessage newsMessage = getNewsMessage(state);
+					if (newsMessage != null) {
+						state.getSession().sendMessage(newsMessage);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 	}

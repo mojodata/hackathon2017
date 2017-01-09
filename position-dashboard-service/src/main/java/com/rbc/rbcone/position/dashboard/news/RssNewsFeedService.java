@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,37 +29,21 @@ public class RssNewsFeedService {
 	@Autowired
 	private RestOperations rssFeedFetcher;
 	
-	private Map<String, RssSessionState> websocketSessionMap = new HashMap<>();
-	
-	public List<NewsItem> getRssNewsItem(String websocketId, String topic) {
-		LOGGER.info("Searching RSS feeds for " + topic);
-		updateCurrentTopic(websocketId, topic);
+	public List<NewsItem> getRssNewsItem(NewsFeedSessionState sessionState) {
+		LOGGER.info("Searching RSS feeds for " + sessionState.getCurrentTopic());
 		List<NewsItem> newsItems = new ArrayList<>();
 		try {
-			String news = fetchNewsFromGoogle(topic);
+			String news = fetchNewsFromGoogle(sessionState.getCurrentTopic());
 			//String news = loadRssSample();
 			feedParser.parseRssFeed(news, "Google Finance", newsItems);
-			newsItems = filterOldNews(websocketId, newsItems);
+			newsItems = filterOldNews(sessionState, newsItems);
 		} catch (FeedException | IOException e) {
 			e.printStackTrace();
 		}
 		return newsItems;
 	}
-	
-	private void updateCurrentTopic(String websocketId, String topic) {
-		RssSessionState sessionState = websocketSessionMap.get(websocketId);
-		if (sessionState == null) {
-			sessionState = new RssSessionState();
-			websocketSessionMap.put(websocketId, sessionState);
-		}
-		if (!topic.equals(sessionState.getCurrentTopic())) {
-			sessionState.setCurrentTopic(topic);
-			sessionState.setLatestNewsDate(null);
-		}
-	}
 
-	private List<NewsItem> filterOldNews(String websocketId, List<NewsItem> newsItems) {
-		RssSessionState sessionState = websocketSessionMap.get(websocketId);
+	private List<NewsItem> filterOldNews(NewsFeedSessionState sessionState, List<NewsItem> newsItems) {
 		List<NewsItem> filteredItems = new ArrayList<>();
 		for (NewsItem rssNewsItem : newsItems) {
 			if (sessionState.getLatestNewsDate() != null) {
