@@ -3,11 +3,14 @@ package com.rbc.rbcone.position.dashboard.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.rbc.rbcone.position.dashboard.model.NewsItem;
 
 import net.minidev.json.JSONArray;

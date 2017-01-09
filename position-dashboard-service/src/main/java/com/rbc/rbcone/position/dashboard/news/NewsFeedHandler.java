@@ -3,6 +3,9 @@ package com.rbc.rbcone.position.dashboard.news;
 import java.io.IOException;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.socket.CloseStatus;
@@ -27,6 +30,7 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 	
 	private WebSocketSession newsSession;
 	private String currentTopic;
+	private int count;
 	
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -51,7 +55,8 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 
 	private TextMessage getNewsMessage(String topic) {
 //		List<NewsItem> newsItems = newsFeedService.getNews(topic, System.currentTimeMillis() - refreshRate);
-		List<NewsItem> newsItems = Arrays.asList(new NewsItem("title" + count, "http://www.google.com"), new NewsItem("title" + count++, "http://www.google.com"));
+//		List<NewsItem> newsItems = Arrays.asList(new NewsItem("title" + count, "http://www.google.com"), new NewsItem("title" + count++, "http://www.google.com"));
+		List<RssNewsItem> newsItems = rssNewsFeedService.getRssNewsItem(topic);
 		logger.info("News items for topic: " + topic + " :" + newsItems);
 		return new TextMessage(new JSONArray(newsItems).toString());
 	}
@@ -60,16 +65,10 @@ public class NewsFeedHandler extends TextWebSocketHandler {
 	public void checkForNews() {
 		if (newsSession != null && currentTopic != null) {
 			try {
-				String country = "CA";
-				long sinceTimeMillis = System.currentTimeMillis() - POLLING_RATE;
-//				newsSession.sendMessage(new TextMessage(serializeNewsItems(newsFeedService.getNews(currentTopic, country, sinceTimeMillis)));
+				newsSession.sendMessage(getNewsMessage(currentTopic));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	private String serializeNewsItems(List<RssNewsItem> newsItesm) {
-		return null;
 	}
 }
