@@ -1,12 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AgmCoreModule } from 'angular2-google-maps/core';
 import { Ng2MapModule } from 'ng2-map';
 
-import { TooltipModule, ModalModule } from 'ng2-bootstrap';
+import { TooltipModule, ModalModule, TypeaheadModule } from 'ng2-bootstrap';
 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 
@@ -48,9 +48,11 @@ import { ColorBarComponent } from './color-bar/color-bar.component';
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpModule,
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
+    TypeaheadModule.forRoot(),
     Ng2MapModule,
     Ng2SmartTableModule,
     AgmCoreModule.forRoot({

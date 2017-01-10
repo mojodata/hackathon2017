@@ -1,7 +1,12 @@
-<h3>News Feed</h3>
-<h4 *ngIf="topic">Topic: {{topic}}</h4>
 <div class="row">
-    <div class="col-xs-12">
-        <ng2-smart-table [settings]="settings" [source]="source"></ng2-smart-table>
-    </div>
+	<div class="col-xs-12 white-background">
+		<!-- <h5 *ngIf="topic">News Feed: {{topic}}</h5> -->
+		<form [formGroup]="feedForm" class="form-inline" (ngSubmit)="onSubmit()">
+			<div class="form-group">
+				<label for="newsFeedTopic">News Feed:</label> 
+				<input type="text" id="newsFeedTopic" formControlName="topic" [typeahead]="topics" (typeaheadOnSelect)="typeaheadOnSelect($event)" class="form-control">
+			</div>
+		</form>
+  	<ng2-smart-table [settings]="settings" [source]="source"></ng2-smart-table>
+	</div>
 </div>
